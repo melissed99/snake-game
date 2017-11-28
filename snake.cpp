@@ -18,7 +18,6 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 // width and height (in pixels) of the LCD image
 #define LCD_WIDTH 2048
 #define LCD_HEIGHT 2048
-//lcd_image_t yegImage = { "yeg-big.lcd", LCD_WIDTH, LCD_HEIGHT };
 
 #define JOY_VERT  A1 // should connect A1 to pin VRx
 #define JOY_HORIZ A0 // should connect A0 to pin VRy
@@ -27,7 +26,7 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 #define JOY_CENTER   512
 #define JOY_DEADZONE 64
 
-#define CURSOR_SIZE 9
+#define CURSOR_SIZE 6
 
 // smaller numbers yield faster cursor movement
 #define JOY_SPEED 64
@@ -67,9 +66,9 @@ void setup() {
 }
 
 void startPage() {
-tft.fillScreen(0x8811);
+tft.fillScreen(0x8811); // 0x8811
 tft.setCursor(DISPLAY_WIDTH/2 - 45, 30);
-tft.setTextColor (ILI9341_WHITE);
+tft.setTextColor(ILI9341_WHITE);
 tft.setTextSize(3);
 tft.println("SNAKE");
 tft.setTextSize(2);
@@ -102,30 +101,22 @@ void game() {
   tft.println(head[0].y);
   tft.print(head[0].direction);
 
-  redrawCursor(ILI9341_RED);
   delay(20);
+
+  // draw apple
+  tft.fillRect(DISPLAY_WIDTH/4, DISPLAY_HEIGHT/4, 5, 5, ILI9341_BLUE);
+  redrawCursor(DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2, DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2);
+
 
   while (true) {
     processJoystick();
+		int buttonVal = digitalRead(JOY_SEL);
+    if (buttonVal == 0) {
+      startPage();
+      // draw the initial cursor
+    }
   }
 
-  // JESS' moving thing
-  int length = 5;
-  int i;
-  int j;
-  int buffer_x[length/5];
-  int buffer_y[length/5];
-  if(head[0].direction == 'u') {
-  i = 0;
-  while(i < (length/5)) {
-    buffer_x[i] = head[i].x;
-    buffer_y[i] = head[i].y;
-    i++;
-  }
-  head[0].y = head[0].y - 5;
-  tft.fillRect(head[0].x, head[0].y, 5, 5, 0xFFFF);
-  //
-}
 }
 
 // redraws the patch of edmonton over the older cursor position
@@ -134,13 +125,12 @@ void game() {
 void redrawCursor(int newX, int newY, int oldX, int oldY) {
 
   // and now draw the cursor at the new position
-  tft.fillRect(newX, newY, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
+  tft.fillRect(newX, newY, CURSOR_SIZE, CURSOR_SIZE, ILI9341_WHITE);
 }
 
 void processJoystick() {
   int xVal = analogRead(JOY_HORIZ);
   int yVal = analogRead(JOY_VERT);
-  int buttonVal = digitalRead(JOY_SEL);
 
   // copy the cursor position (to check later if it changed)
   int oldX = cursorX;
@@ -159,7 +149,15 @@ void processJoystick() {
     redrawCursor(cursorX, cursorY, oldX, oldY);
   }
 
-  delay(10);
+  // constrain and prevent diagonal movement
+  if (cursorY != oldY) {
+      cursorX = oldX;
+    }
+  else if(cursorX != oldX) {
+    cursorY = oldY;
+  }
+
+  delay(50);
 }
 
 int main() {
