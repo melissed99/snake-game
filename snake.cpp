@@ -39,6 +39,7 @@ int cursorX, cursorY;
 void redrawCursor(int newX, int newY, int oldX, int oldY);
 void startPage();
 void game();
+void processJoystick();
 
 void setup() {
   init();
@@ -104,7 +105,11 @@ void game() {
   redrawCursor(ILI9341_RED);
   delay(20);
 
-  // JESS' moving thing 
+  while (true) {
+    processJoystick();
+  }
+
+  // JESS' moving thing
   int length = 5;
   int i;
   int j;
@@ -127,11 +132,6 @@ void game() {
 // given by "oldX, oldY" and draws the cursor at its new position
 // given by "newX, newY"
 void redrawCursor(int newX, int newY, int oldX, int oldY) {
-
-  // draw the patch of edmonton over the old cursor
-  // lcd_image_draw(&yegImage, &tft,
-  //                YEG_MIDDLE_X + oldX, YEG_MIDDLE_Y + oldY,
-  //                oldX, oldY, CURSOR_SIZE, CURSOR_SIZE);
 
   // and now draw the cursor at the new position
   tft.fillRect(newX, newY, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
