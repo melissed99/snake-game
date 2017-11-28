@@ -1,171 +1,163 @@
-// SNAKE GAME ON ARDUINO
-
 #include <Arduino.h>
+#include <Adafruit_ILI9341.h>
 #include <SPI.h>
 #include <SD.h>
-#include <Adafruit_ILI9341.h>
+#include <TouchScreen.h>
 
+// TFT display and SD card will share the hardware SPI interface.
+// For the Adafruit shield, these are the default.
+// The display uses hardware SPI, plus #9 & #10
+// Mega2560 Wiring: connect TFT_CLK to 52, TFT_MISO to 50, and TFT_MOSI to 51.
 #define TFT_DC 9
 #define TFT_CS 10
 #define SD_CS 6
 
-Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
+// joystick pins
+#define JOY_VERT_ANALOG A1
+#define JOY_HORIZ_ANALOG A0
+#define JOY_SEL 2
 
-// physical dimensions of the tft display (# of pixels)
-#define DISPLAY_WIDTH  320
-#define DISPLAY_HEIGHT 240
+// width/height of the display when rotated horizontally
+#define TFT_WIDTH 320
+#define TFT_HEIGHT 240
 
-// width and height (in pixels) of the LCD image
-#define LCD_WIDTH 2048
-#define LCD_HEIGHT 2048
+#define RATING_SIZE 48
+#define DISP_WIDTH TFT_WIDTH
+#define DISP_HEIGHT TFT_HEIGHT
 
-#define JOY_VERT  A1 // should connect A1 to pin VRx
-#define JOY_HORIZ A0 // should connect A0 to pin VRy
-#define JOY_SEL   2
-
-#define JOY_CENTER   512
+// constants for the joystick
 #define JOY_DEADZONE 64
+#define JOY_CENTRE 512
+#define JOY_STEPS_PER_PIXEL 64
 
-#define CURSOR_SIZE 6
+// These are the four touchscreen analog pins
+#define YP A2  // must be an analog pin, use "An" notation!
+#define XM A3  // must be an analog pin, use "An" notation!
+#define YM 5   // can be a digital pin
+#define XP 4   // can be a digital pin
 
-// smaller numbers yield faster cursor movement
-#define JOY_SPEED 64
+// calibration data for the touch screen, obtained from documentation
+// the minimum/maximum possible readings from the touch point
+#define TS_MINX 150
+#define TS_MINY 120
+#define TS_MAXX 920
+#define TS_MAXY 940
 
-// the cursor position on the display, stored as the middle pixel of the cursor
-int cursorX, cursorY;
+// thresholds to determine if there was a touch
+#define MINPRESSURE   10
+#define MAXPRESSURE 1000
 
-// forward declaration for drawing the cursor
-void redrawCursor(int newX, int newY, int oldX, int oldY);
-void startPage();
-void game();
-void processJoystick();
+// Cursor size. For best results, use an odd number.
+#define CURSOR_SIZE 9
 
-void setup() {
-  init();
 
-  Serial.begin(9600);
+// Use hardware SPI (on Mega2560, #52, #51, and #50) and the above for CS/DC
+Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
+TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
-  // not actually used in this exercise, but it's ok to leave it
-	pinMode(JOY_SEL, INPUT_PULLUP);
+void mainGame(){
+	tft.fillScreen(ILI9341_RED);
+}
 
-	tft.begin();
-	tft.setRotation(3);
-  tft.fillScreen(ILI9341_BLACK);
+void checkTouchStartPage() {
+	TSPoint p = ts.getPoint();
 
-  startPage();
-
-  while(true) {
-		int buttonVal = digitalRead(JOY_SEL);
-
-		if (buttonVal == 0) {
-			game();
-      // draw the initial cursor
-    }
+	if (p.z < MINPRESSURE || p.z > MAXPRESSURE) {
+		// no touch, just quit
+		return;
 	}
 
+	p.x = map(p.x, TS_MINX, TS_MAXX, 0, tft.width());
+	p.y = map(p.y, TS_MINY, TS_MAXY, 0, tft.height());
+
+	if ((p.x>=(DISP_WIDTH/2 - 95)) && (p.x<=255) && (p.y>=115) && (p.y<=175) ) {
+		mainGame();
+		return;
+	}
 }
 
 void startPage() {
-tft.fillScreen(0x8811); // 0x8811
-tft.setCursor(DISPLAY_WIDTH/2 - 45, 30);
-tft.setTextColor(ILI9341_WHITE);
-tft.setTextSize(3);
-tft.println("SNAKE");
-tft.setTextSize(2);
-tft.println(" ");
-tft.setTextSize(1);
-tft.setCursor(DISPLAY_WIDTH/2 - 65, 55);
-tft.println("touch start to begin!");
+	tft.fillScreen(0x8811);
+
+	tft.setCursor(DISP_WIDTH/2 - 45, 30);
+	tft.setTextColor (ILI9341_WHITE);
+	tft.setTextSize(3);
+	tft.println("SNAKE");
+
+	tft.setTextSize(1);
+	tft.setCursor(DISP_WIDTH/2 - 65, 55);
+	tft.println("Touch Start To Begin!");
+
+	tft.fillRect(DISP_WIDTH/2 - 95, 115, 190, 60, ILI9341_BLACK);
+	tft.drawRect(DISP_WIDTH/2 - 95, 115, 190, 60, ILI9341_BLACK);
+	tft.setCursor(DISP_WIDTH/2 - 85, 125 );
+	tft.setTextColor(ILI9341_WHITE);
+	tft.setTextSize(6);
+	tft.print("START");
+
+	while(true){
+		checkTouchStartPage();
+	}
 }
 
-struct Snake {
-  int x, y;
-  char direction;
-  // up = u, down = d, left = l, right = r
-};
+void checkTouchGameOver() {
+	TSPoint p = ts.getPoint();
 
-Snake head[100];
+	if (p.z < MINPRESSURE || p.z > MAXPRESSURE) {
+		// no touch, just quit
+		return;
+	}
+	p.x = map(p.x, TS_MINX, TS_MAXX, 0, tft.width());
+	p.y = map(p.y, TS_MINY, TS_MAXY, 0, tft.height());
 
-void initSnake() {
-  head[0].x = DISPLAY_WIDTH/2;
-  head[0].y = DISPLAY_HEIGHT/2;
-  head[0].direction = 'u';
+	if ((p.x>=(DISP_WIDTH/2 - 95)) && (p.x<=255) && (p.y>=115) && (p.y<=175) ) {
+		startPage();
+		return;
+	}
 }
 
-void game() {
-  tft.fillScreen(ILI9341_BLACK);
+void gameOver(){
 
-  initSnake();
+	tft.fillScreen(0x07E0);
 
-  tft.println(head[0].x);
-  tft.println(head[0].y);
-  tft.print(head[0].direction);
+	tft.setCursor(30, 20);
+	tft.setTextColor(ILI9341_RED);
+	tft.setTextSize(5);
+	tft.print("GAME OVER");
 
-  delay(20);
+	tft.fillRect(DISP_WIDTH/2 - 95, 115, 190, 60, ILI9341_WHITE);
+	tft.drawRect(DISP_WIDTH/2 - 95, 115, 190, 60, ILI9341_BLACK);
+	tft.setCursor(DISP_WIDTH/2 - 85, 125 );
+	tft.setTextColor(ILI9341_RED);
+	tft.setTextSize(6);
+	tft.print("RESET");
 
-  // draw apple
-  tft.fillRect(DISPLAY_WIDTH/4, DISPLAY_HEIGHT/4, 5, 5, ILI9341_BLUE);
-  redrawCursor(DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2, DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2);
-
-
-  while (true) {
-    processJoystick();
-		int buttonVal = digitalRead(JOY_SEL);
-    if (buttonVal == 0) {
-      startPage();
-      // draw the initial cursor
-    }
-  }
-
+	while(true){
+		checkTouchGameOver();
+	}
 }
 
-// redraws the patch of edmonton over the older cursor position
-// given by "oldX, oldY" and draws the cursor at its new position
-// given by "newX, newY"
-void redrawCursor(int newX, int newY, int oldX, int oldY) {
+void setup() {
+	init();
 
-  // and now draw the cursor at the new position
-  tft.fillRect(newX, newY, CURSOR_SIZE, CURSOR_SIZE, ILI9341_WHITE);
+	pinMode(JOY_SEL, INPUT_PULLUP);
+
+	Serial.begin(9600);
+	tft.begin();
+
+	tft.setRotation(3);
+
+
+	tft.setRotation(-1);
+	tft.setTextWrap(false);
 }
 
-void processJoystick() {
-  int xVal = analogRead(JOY_HORIZ);
-  int yVal = analogRead(JOY_VERT);
-
-  // copy the cursor position (to check later if it changed)
-  int oldX = cursorX;
-  int oldY = cursorY;
-
-  // move the cursor, further pushes mean faster movement
-  cursorX += (JOY_CENTER - xVal) / JOY_SPEED;
-  cursorY += (yVal - JOY_CENTER) / JOY_SPEED;
-
-  // constrain so the cursor does not go off of the map display window
-  cursorX = constrain(cursorX, 0, DISPLAY_WIDTH - CURSOR_SIZE);
-  cursorY = constrain(cursorY, 0, DISPLAY_HEIGHT - CURSOR_SIZE);
-
-  // redraw the cursor only if its position actually changed
-  if (cursorX != oldX || cursorY != oldY) {
-    redrawCursor(cursorX, cursorY, oldX, oldY);
-  }
-
-  // constrain and prevent diagonal movement
-  if (cursorY != oldY) {
-      cursorX = oldX;
-    }
-  else if(cursorX != oldX) {
-    cursorY = oldY;
-  }
-
-  delay(50);
-}
 
 int main() {
 	setup();
+	//gameOver();
+	startPage();
 
-  while (true) {
-    processJoystick();
-  }
 
 	Serial.end();
 	return 0;
