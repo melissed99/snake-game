@@ -20,3 +20,13 @@ Milestone 3:
 - Endgame conditions if snake hits corner/edge of screen or hits itself.
 - Draw and record score.
 - After score of 5 or 10(?) increase snake movement (makes it more difficult)
+
+
+
+TO DO AS OF NOV 28:
+- eating the apple and erasing it from screen
+- incrementing and recording score, then displaying once game is OVER
+
+- change speed every 5 apples eaten
+- be able to move snake with variable length and erase tail
+- restrain/prevent diagonal movement
