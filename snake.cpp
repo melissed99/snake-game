@@ -48,7 +48,7 @@
 #define MAXPRESSURE 1000
 
 // Cursor size. For best results, use an odd number.
-#define CURSOR_SIZE 6
+#define CURSOR_SIZE 5
 
 // smaller numbers yield faster cursor movement
 #define JOY_SPEED 64
@@ -60,12 +60,11 @@ int cursorX, cursorY;
 void redrawCursor(int newX, int newY, int oldX, int oldY);
 void startPage();
 void game();
-void processJoystick();
+void moveSnake();
 
 // Use hardware SPI (on Mega2560, #52, #51, and #50) and the above for CS/DC
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
-
 
 void checkTouchStartPage() {
 	TSPoint p = ts.getPoint();
@@ -84,7 +83,6 @@ void checkTouchStartPage() {
 	}
 }
 
-
 void checkTouchGameOver() {
 	TSPoint p = ts.getPoint();
 
@@ -100,9 +98,6 @@ void checkTouchGameOver() {
 		return;
 	}
 }
-
-
-
 
 void gameOver() {
 
@@ -125,7 +120,6 @@ void gameOver() {
 	}
 
 }
-
 
 void startPage() {
 	tft.fillScreen(0x8811);
@@ -160,37 +154,29 @@ void setup() {
 
 	pinMode(JOY_SEL, INPUT_PULLUP);
 
-  // constrain so the cursor does not go off of the map display window
-  cursorX = constrain(cursorX, 0, DISP_WIDTH - CURSOR_SIZE);
-  cursorY = constrain(cursorY, 0, DISP_HEIGHT - CURSOR_SIZE);
-
-	pinMode(JOY_SEL, INPUT_PULLUP);
-
 	Serial.begin(9600);
 	tft.begin();
-
 	tft.setRotation(3);
-
 	tft.setRotation(-1);
 	tft.setTextWrap(false);
 
 	//tft.fillScreen(ILI9341_BLACK);
-
-	//startPage();
 }
 
-struct Snake {
+struct snakeStruct {
   int x, y;
-  char direction;
+  char move;
   // up = u, down = d, left = l, right = r
 };
 
-Snake head[100];
+snakeStruct snake[100];
 
 void initSnake() {
-  head[0].x = DISP_WIDTH/2;
-  head[0].y = DISP_HEIGHT/2;
-  head[0].direction = 'u';
+  snake[0].x = DISP_WIDTH/2;
+  snake[0].y = DISP_HEIGHT/2;
+  snake[0].move = 'u';
+  constrain(snake[0].x, 0, DISP_WIDTH);
+  constrain(snake[0].y, 0, DISP_HEIGHT);
 }
 
 void game() {
@@ -198,19 +184,21 @@ void game() {
 
   initSnake();
 
-  tft.println(head[0].x);
-  tft.println(head[0].y);
-  tft.print(head[0].direction);
-
+  //tft.println(snake[0].x);
+  //tft.println(snake[0].y);
+  //tft.print(snake[0].move);
   delay(20);
 
   // draw apple
+  // randomize this location later.
   tft.fillRect(DISP_WIDTH/4, DISP_HEIGHT/4, 5, 5, ILI9341_BLUE);
+
+  // draw initial cursor? snake head? IDK
   redrawCursor(DISP_WIDTH/2, DISP_HEIGHT/2, DISP_WIDTH/2, DISP_HEIGHT/2);
 
 
   while (true) {
-    processJoystick();
+    moveSnake();
 		int buttonVal = digitalRead(JOY_SEL);
     if (buttonVal == 0) {
       startPage();
@@ -224,12 +212,72 @@ void game() {
 // given by "oldX, oldY" and draws the cursor at its new position
 // given by "newX, newY"
 void redrawCursor(int newX, int newY, int oldX, int oldY) {
-
   // and now draw the cursor at the new position
+  tft.fillRect(oldX, oldY, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLACK);
   tft.fillRect(newX, newY, CURSOR_SIZE, CURSOR_SIZE, ILI9341_WHITE);
 }
 
-void processJoystick() {
+// for now, snake only moves vertically upward by itself
+// looks choppy, but might use buffer instead when
+// it comes to having the snake grow in size? not sure yet.
+void moveUp() {
+  int length = 5;
+  int lastX[length];
+  int lastY[length];
+  for (int i = 0; i < length; i++) {
+     lastX[i] = snake[i].x;
+     lastY[i] = snake[i].y;
+   }
+
+  // decrease y coordinate of snake
+  snake[0].y -= 5;
+  //draw snake
+  tft.fillRect(snake[0].x, snake[0].y, 5, 5, 0xFFFF);
+  delay(500);
+  // erase tail
+  if (snake[0].y == 0) {
+    // if hit boundary, just turn snake head red instead of black
+    tft.fillRect(snake[0].x, snake[0].y, 5, 5, ILI9341_RED);
+    snake[0].move = 'd'; // change directions when hit top boundary
+    //tft.fillRect(lastX[(length)-1], lastY[(length)-1], 5, 5, ILI9341_RED);
+  }
+  else {
+    // erase end of snake moving forward
+    tft.fillRect(snake[0].x, snake[0].y, 5, 5, 0x0000);
+    //tft.fillRect(lastX[(length)-1], lastY[(length)-1], 5, 5, ILI9341_BLACK);
+  }
+
+  int j = 0;
+	while(j<(length/5)-1) {
+		snake[j+1].x = lastX[j];
+		snake[j+1].y = lastY[j];
+		tft.fillRect(snake[j+1].x, snake[j+1].y, 5, 5, 0xFFFF);
+		j++;
+	}
+	tft.fillRect(lastX[(length/5)-1], lastY[(length/5)-1], 5, 5, 0x0000);
+}
+
+void moveDown() {
+  // increase y coordinate of snake
+  snake[0].y += 5;
+  //draw snake
+  tft.fillRect(snake[0].x, snake[0].y, 5, 5, 0xFFFF);
+  delay(500);
+  // erase tail
+  if (snake[0].y == DISP_HEIGHT - CURSOR_SIZE) {
+    // if hit boundary, just turn snake head red instead of black
+    tft.fillRect(snake[0].x, snake[0].y, 5, 5, ILI9341_BLUE);
+    //snake[0].move = 'd'; // change directions when hit top boundary
+    //tft.fillRect(lastX[(length)-1], lastY[(length)-1], 5, 5, ILI9341_RED);
+  }
+  else {
+    // erase end of snake moving forward
+    tft.fillRect(snake[0].x, snake[0].y, 5, 5, 0x0000);
+    //tft.fillRect(lastX[(length)-1], lastY[(length)-1], 5, 5, ILI9341_BLACK);
+  }
+}
+
+void moveSnake() {
   int xVal = analogRead(JOY_HORIZ);
   int yVal = analogRead(JOY_VERT);
 
@@ -240,6 +288,22 @@ void processJoystick() {
   // move the cursor, further pushes mean faster movement
   cursorX += (JOY_CENTER - xVal) / JOY_SPEED;
   cursorY += (yVal - JOY_CENTER) / JOY_SPEED;
+
+  /*
+  if (yVal < JOY_CENTER - JOY_DEADZONE) { // joystick UP
+    cursorY -= 2; // decrease the y coordinate of the cursor //
+  }
+  else if (yVal > JOY_CENTER + JOY_DEADZONE) { // joystick DOWN
+    cursorY += 2; // increase the y coordinate of the cursor
+  }
+
+  if (xVal > JOY_CENTER + JOY_DEADZONE) {
+    cursorX -= 1; // remember the x-reading increases as we push left
+  }
+  else if (xVal < JOY_CENTER - JOY_DEADZONE) {
+    cursorX += 1;
+  }
+  */
 
   // constrain so the cursor does not go off of the map display window
   cursorX = constrain(cursorX, 0, DISP_WIDTH - CURSOR_SIZE);
@@ -258,6 +322,27 @@ void processJoystick() {
     cursorY = oldY;
   }
 
+  if (snake[0].move == 'd') {
+    moveDown();
+  }
+
+  else if (snake[0].move == 'u') {
+    moveUp();
+    //oldY += 1;
+    //redrawCursor(cursorX, cursorY, oldX, oldY);
+    //cursorY += 2;
+
+  }
+
+  // else if (snake[0].move == 2) {
+  //   moveLeft();
+  // }
+  //
+  // else if (snake[0].move == 3) {
+  //   moveRight();
+  // }
+
+
   delay(50);
 }
 
@@ -268,7 +353,7 @@ int main() {
 	startPage();
 
 	while (true) {
-    processJoystick();
+    moveSnake();
   }
 
 	Serial.end();
