@@ -167,8 +167,8 @@ void setup() {
 
 struct snakeStruct {
   int x, y;
-  char move; // indicates which direction the snake is moving
-  				   // up = u, down = d, left = l, right = r
+  char move;
+  // up = u, down = d, left = l, right = r
 };
 
 snakeStruct snake[100];
@@ -184,18 +184,25 @@ uint32_t randomNum() {
 	// and returns it
 	int analogPin = 1;
 	int randomKey = 0;
-	uint32_t pinArray[16];
+	uint8_t pinArray[16];
 	for (int i = 0; i < 16; ++i) {
 		pinArray[i] = analogRead((analogPin));
 		randomKey += pinArray[i];
+
 		delay(50);
 	}
-	return randomKey;
+	//return randomKey;
+	if (randomKey %5 == 0) {
+		return randomKey;
+	}
+	else {
+		randomNum();
+	}
 }
 
 struct coordinates {
-	uint32_t y;
 	uint32_t x;
+	uint32_t y;
 };
 
 coordinates random_apple() {
@@ -221,19 +228,15 @@ coordinates random_apple() {
 	return apple;
 }
 
-
-
 void game() {
   tft.fillScreen(ILI9341_BLACK);
 
   initSnake();
-	//makeFood();//
 
-
-	//choosing the position of the apple
+	//randomize apple position
 	coordinates choose_apple = random_apple();
-	//Snake begin = snake[];
 
+	tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED); // lol why CYAN
 
   delay(20);
 
@@ -241,31 +244,22 @@ void game() {
   while (true) {
     processSnake();
 
-		tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED); // lol why CYAN
-		//Serial.print("choose_apple.x: ");
-		//Serial.println(choose_apple.x);
-		//Serial.print("snakesnake.x: " );
-		//Serial.print(cursorX);
+		// Serial.print("choose_apple.x: ");
+		// Serial.println(choose_apple.x);
+		// Serial.print("snakehead.x: " );
+		// Serial.print(snake[0].x);
+
 		// Serial.print("choose_apple.y: ");
 		// Serial.println(choose_apple.y);
 		// Serial.print("snakesnake.y: " );
 		// Serial.print(cursorY);
 
-		// if (foodX == snake[0].x && foodY == snake[0].y) { //
-		// 	//length = length + 4;
-		// 	//choose_apple = random_apple();
-		// 	//score++;
-		// 	makeFood();
-		// }
-
 
 		//eat apple
-		//if ((choose_apple.x >= cursorX) && (choose_apple.x+1<= cursorX) && (choose_apple.y >= cursorY) && (choose_apple.y+1 <= cursorY)) {
-		if (choose_apple.x == snake[0].x && choose_apple.y == snake[0].y)//{
-      if (snake[0].x <= choose_apple.x + 10 && snake[0].x >= choose_apple.x + 10) {
-			tft.fillScreen(ILI9341_RED);
-			//length = length + 4;
-			// 3int score = 0;
+		if (choose_apple.x == snake[0].x && choose_apple.y == snake[0].y){
+			choose_apple = random_apple();
+			tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
+
 			//choose_apple = random_apple();
 			////////tft.fillRect(choose_apple.x, choose_apple.y, 8, 8, ILI9341_CYAN);
 			// score +1;
