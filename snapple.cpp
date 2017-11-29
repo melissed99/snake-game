@@ -61,17 +61,6 @@ void processSnake();
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
-uint8_t foodX;
-uint8_t foodY;
-
-// void makeFood(){ //
-//     foodX = (((rand() % DISP_WIDTH)*4)%DISP_WIDTH);
-//     foodY = (((rand() % DISP_HEIGHT)*4)%DISP_HEIGHT);
-//
-// 		tft.fillRect(foodX, foodY, 10, 10, ILI9341_RED);
-//
-// }
-
 void checkTouchStartPage() {
 	TSPoint p = ts.getPoint();
 
@@ -184,8 +173,8 @@ uint32_t randomNum() {
 	// and returns it
 	int analogPin = 1;
 	int randomKey = 0;
-	uint8_t pinArray[16];
-	for (int i = 0; i < 16; ++i) {
+	uint32_t pinArray[8];
+	for (int i = 0; i < 8; ++i) {
 		pinArray[i] = analogRead((analogPin));
 		randomKey += pinArray[i];
 
