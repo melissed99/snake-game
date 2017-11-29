@@ -4,6 +4,10 @@
 #include <SD.h>
 #include <TouchScreen.h>
 
+#include <stdio.h>      /* printf, NULL */
+#include <stdlib.h>     /* srand, rand */
+//#include <time.h>       /* time */
+
 // TFT display and SD card will share the hardware SPI interface.
 // For the Adafruit shield, these are the default.
 // The display uses hardware SPI, plus #9 & #10
@@ -168,24 +172,38 @@ void initSnake() {
   snake[0].move = 'u';
 }
 
-uint32_t randomNum() {
-	// creates unsigned 16-bit random private key
-	// and returns it
-	int analogPin = 1;
-	int randomKey = 0;
-	uint32_t pinArray[8];
-	for (int i = 0; i < 8; ++i) {
-		pinArray[i] = analogRead((analogPin));
-		randomKey += pinArray[i];
+// uint32_t randomNum() {
+// 	// creates unsigned 16-bit random private key
+// 	// and returns it
+// 	int analogPin = 1;
+// 	int randomKey = 0;
+// 	uint32_t pinArray[8];
+// 	for (int i = 0; i < 8; ++i) {
+// 		pinArray[i] = analogRead((analogPin));
+// 		randomKey += pinArray[i];
+//
+// 		delay(50);
+// 	}
+// 	//return randomKey;
+// 	if (randomKey %5 == 0) {
+// 		return randomKey;
+// 	}
+// 	else {
+// 		randomNum();
+// 	}
+// }
 
-		delay(50);
-	}
+
+uint32_t randomNum1() {
+
+	int randomKey = 0;
+ 	randomKey = rand();
 	//return randomKey;
 	if (randomKey %5 == 0) {
 		return randomKey;
 	}
 	else {
-		randomNum();
+		randomNum1();
 	}
 }
 
@@ -197,8 +215,9 @@ struct coordinates {
 coordinates random_apple() {
 	int i = 1;
 	coordinates apple;
-	uint32_t randomnumX = randomNum();
-	uint32_t randomnumY = randomNum();
+
+	uint32_t randomnumX = randomNum1();////////////////////////////
+	uint32_t randomnumY = randomNum1();
 
 	apple.x = randomnumX % DISP_WIDTH;
 	apple.y = randomnumY % DISP_HEIGHT;
