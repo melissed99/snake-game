@@ -181,10 +181,6 @@ void game() {
   tft.fillScreen(ILI9341_BLACK);
 
   initSnake();
-
-  //tft.println(snake[0].x);
-  //tft.println(snake[0].y);
-  //tft.print(snake[0].move);
   delay(20);
 
   // draw apple
@@ -219,9 +215,9 @@ void redrawCursor(int newX, int newY, int oldX, int oldY) {
 
 void movingSnake() {
 
-  int length = 1;
-		int tempX[length];
-		int tempY[length];
+    int snakeLength = 1;
+		int tempX[snakeLength];
+		int tempY[snakeLength];
 		int xVal = analogRead(JOY_HORIZ);
 	  int yVal = analogRead(JOY_VERT);
 		int oldX = xVal;
@@ -237,14 +233,14 @@ void movingSnake() {
 
 		// MOVING UP
 		if (snake[0].move == 'u') {
-			for (int i = 0; i < length; i++) {
+			for (int i = 0; i < snakeLength; i++) {
 				tempX[i] = snake[i].x;
 				tempY[i] = snake[i].y;
 			}
 
 			snake[0].y -= 5;
 			tft.fillRect(snake[0].x, snake[0].y, 5, 5, 0xFFFF);
-			tft.fillRect(tempX[(length) - 1], tempY[(length) - 1], 5, 5, 0x0000);
+			tft.fillRect(tempX[(snakeLength) - 1], tempY[(snakeLength) - 1], 5, 5, 0x0000);
 
 			// if change direction to the LEFT
 			if ((xVal < JOY_CENTER - JOY_DEADZONE) && yVal == oldY) {
@@ -253,21 +249,21 @@ void movingSnake() {
 
 			else if ((xVal > JOY_CENTER + JOY_DEADZONE) && yVal == oldY) {
 				snake[0].move = 'l';
-				tft.fillRect(tempX[(length)-1], tempY[(length)-1], 5, 5, 0x0000);
+				tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
 			}
 		delay(500);
 		} // END MOVE UP
 
 		// MOVING DOWN
 		else if (snake[0].move == 'd') {
-			for (int i = 0; i < length; i++) {
+			for (int i = 0; i < snakeLength; i++) {
 				tempX[i] = snake[i].x;
 				tempY[i] = snake[i].y;
 			}
 
 			snake[0].y += 5;
 			tft.fillRect(snake[0].x, snake[0].y, 5, 5, 0xFFFF);
-			tft.fillRect(tempX[(length)-1], tempY[(length)-1], 5, 5, 0x0000);
+			tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
 
 			// if change direction to the LEFT
 			if ((xVal < JOY_CENTER - JOY_DEADZONE) && yVal == oldY) {
@@ -276,21 +272,21 @@ void movingSnake() {
 
 			else if ((xVal > JOY_CENTER + JOY_DEADZONE) && yVal == oldY) {
 				snake[0].move = 'l';
-				tft.fillRect(tempX[(length)-1], tempY[(length)-1], 5, 5, 0x0000);
+				tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
 			}
 		delay(500);
 	} // END MOVE DOWN
 
 	// MOVING LEFT
 	if (snake[0].move == 'l') {
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < snakeLength; i++) {
 			tempX[i] = snake[i].x;
 			tempY[i] = snake[i].y;
 		}
 
 		snake[0].x -= 5;
 		tft.fillRect(snake[0].x, snake[0].y, 5, 5, 0xFFFF);
-		tft.fillRect(tempX[(length)-1], tempY[length-1], 5, 5, 0x0000);
+		tft.fillRect(tempX[(snakeLength)-1], tempY[snakeLength-1], 5, 5, 0x0000);
 
 		// if change direction to the UP
 		if ((yVal < JOY_CENTER - JOY_DEADZONE) && xVal == oldX) {
@@ -300,21 +296,21 @@ void movingSnake() {
 		// change go DOWN
 		else if ((yVal > JOY_CENTER + JOY_DEADZONE) && xVal == oldX) {
 			snake[0].move = 'd';
-			//tft.fillRect(tempX[(length)-1], tempY[(length)-1], 5, 5, 0x0000);
+			//tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
 		}
 	delay(500);
 		} // END MOVE LEFT
 
 		// MOVING RIGHT
 		if (snake[0].move == 'r') {
-			for (int i = 0; i < length; i++) {
+			for (int i = 0; i < snakeLength; i++) {
 				tempX[i] = snake[i].x;
 				tempY[i] = snake[i].y;
 			}
 
 			snake[0].x += 5;
 			tft.fillRect(snake[0].x, snake[0].y, 5, 5, 0xFFFF);
-			tft.fillRect(tempX[length-1], tempY[(length)-1], 5, 5, 0x0000);
+			tft.fillRect(tempX[snakeLength-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
 
 			// if change direction to the UP
 			if ((yVal < JOY_CENTER - JOY_DEADZONE) && xVal == oldX) {
@@ -324,7 +320,7 @@ void movingSnake() {
 			// change go DOWN
 			else if ((yVal > JOY_CENTER + JOY_DEADZONE) && xVal == oldX) {
 				snake[0].move = 'd';
-				//tft.fillRect(tempX[(length)], tempY[(length)-1], 5, 5, 0x0000);
+				//tft.fillRect(tempX[(snakeLength)], tempY[(snakeLength)-1], 5, 5, 0x0000);
 			}
 		delay(500);
 	} // END MOVE RIGHT
@@ -356,7 +352,7 @@ void moveSnake() {
     }
 
     /*
-    for (int i = 1; i < length; i++) {
+    for (int i = 1; i < snakeLength; i++) {
       if (snake[0].x == snake[i].x || snake[0].y == snake[i].y) {
         gameOver();
       }

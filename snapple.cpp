@@ -167,8 +167,8 @@ void setup() {
 
 struct snakeStruct {
   int x, y;
-  char move;
-  // up = u, down = d, left = l, right = r
+  char move; // indicates which direction the snake is moving
+  				   // up = u, down = d, left = l, right = r
 };
 
 snakeStruct snake[100];
@@ -240,11 +240,6 @@ void game() {
 
   while (true) {
     processSnake();
-		//int buttonVal = digitalRead(JOY_SEL);
-    // if (buttonVal == 0) {
-    //   startPage();
-    //   // draw the initial cursor
-    // }
 
 		tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED); // lol why CYAN
 		//Serial.print("choose_apple.x: ");
