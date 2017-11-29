@@ -203,17 +203,13 @@ coordinates random_apple() {
 	apple.x = randomnumX % DISP_WIDTH;
 	apple.y = randomnumY % DISP_HEIGHT;
 
-	// apple.x = ((randomnumX % DISP_WIDTH) *5) %DISP_WIDTH;
-	// apple.y = ((randomnumY % DISP_HEIGHT) *5) % DISP_HEIGHT;
-	//
-	// to avoid the apple going to the walls and out of bounds
-	// if (apple.x <= 0 || apple.x >= DISP_WIDTH) {
-	// 	apple.x = ((rand() %124) * 4) % 124;
-	// }
-	//
-	// if (apple.y <= 0 || apple.y >= DISP_HEIGHT) {
-	// 	apple.y = ((rand() %144) *4) % 144;
-	// }
+	//constrain so that the apple will appear within the screen
+	if (apple.x <= 0 || apple.x >= DISP_WIDTH) {
+		apple.x = randomnumX % DISP_WIDTH;
+	}
+	if (apple.y <= 0 || apple.y >= DISP_HEIGHT) {
+		apple.y = randomnumY % DISP_HEIGHT;
+	}
 	return apple;
 }
 
@@ -229,34 +225,27 @@ void game() {
 
   delay(20);
 
-
   while (true) {
     processSnake();
 
-		// Serial.print("choose_apple.x: ");
-		// Serial.println(choose_apple.x);
-		// Serial.print("snakehead.x: " );
-		// Serial.print(snake[0].x);
+		Serial.print("choose_apple.x: ");
+		Serial.print(choose_apple.x);
+		Serial.print("snakehead.x: " );
+		Serial.print(snake[0].x);
+		Serial.print(" ");
 
-		// Serial.print("choose_apple.y: ");
-		// Serial.println(choose_apple.y);
-		// Serial.print("snakesnake.y: " );
-		// Serial.print(cursorY);
-
+		Serial.print("choose_apple.y: ");
+		Serial.print(choose_apple.y);
+		Serial.print("snakehead.y: " );
+		Serial.println(snake[0].y);
 
 		//eat apple
 		if (choose_apple.x == snake[0].x && choose_apple.y == snake[0].y){
 			choose_apple = random_apple();
 			tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
 
-			//choose_apple = random_apple();
-			////////tft.fillRect(choose_apple.x, choose_apple.y, 8, 8, ILI9341_CYAN);
-			// score +1;
-			// Serial.print(score);
 		}
-
   }
-
 }
 
 int* snakeTail(int tempX[], int tempY[], int snakeLength) {
