@@ -59,7 +59,7 @@ int cursorX, cursorY;
 // forward declaration for drawing the cursor
 void startPage();
 void game();
-void processSnake();
+void processSnake(int snakeLength);
 
 // Use hardware SPI (on Mega2560, #52, #51, and #50) and the above for CS/DC
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
@@ -236,6 +236,7 @@ void game() {
   tft.fillScreen(ILI9341_BLACK);
 
   initSnake();
+	int snakeLength = 5;
 
 	//randomize apple position
 	coordinates choose_apple = random_apple();
@@ -245,7 +246,7 @@ void game() {
   delay(20);
 
   while (true) {
-    processSnake();
+    processSnake(snakeLength);
 
 		Serial.print("choose_apple.x: ");
 		Serial.print(choose_apple.x);
@@ -262,6 +263,7 @@ void game() {
 		if (choose_apple.x == snake[0].x && choose_apple.y == snake[0].y){
 			choose_apple = random_apple();
 			tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
+			snakeLength += 2;
 
 		}
   }
@@ -276,7 +278,7 @@ int* snakeTail(int tempX[], int tempY[], int snakeLength) {
   return tempX, tempY;
 }
 
-void processSnake() {
+void processSnake(int snakeLength) {
   int xVal = analogRead(JOY_HORIZ);
   int yVal = analogRead(JOY_VERT);
   // copy the joystick orientation(?)
@@ -284,7 +286,7 @@ void processSnake() {
   int oldY = yVal; //cursorY;
 
 	/**** PROCESS SNAKE MOVEMENT AND DRAWING/REDRAWING ****/
-	int snakeLength = 5;
+	//int snakeLength = 5;
 	int tempX[snakeLength], tempY[snakeLength];
 
 	// *** restrain diagonal movement
@@ -421,7 +423,8 @@ int main() {
 	startPage();
 
 	while (true) {
-    processSnake();
+		game();
+    //processSnake();
   }
 
 	Serial.end();
