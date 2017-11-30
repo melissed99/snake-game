@@ -92,11 +92,13 @@ void checkTouchGameOver() {
 	p.x = map(p.x, TS_MINX, TS_MAXX, 0, tft.width());
 	p.y = map(p.y, TS_MINY, TS_MAXY, 0, tft.height());
 
-	if ((p.x>=(DISP_WIDTH/2 - 95)) && (p.x<=255) && (p.y>=115) && (p.y<=175) ) {
+	if ((p.x>=(DISP_WIDTH/2 - 95)) && (p.x<=255) && (p.y>=100) && (p.y<=160) ) {
 		startPage();
 		return;
 	}
 }
+
+int score = 0;
 
 void gameOver() {
 	tft.fillScreen(0x07E0);
@@ -106,12 +108,23 @@ void gameOver() {
 	tft.setTextSize(5);
 	tft.print("GAME OVER");
 
-	tft.fillRect(DISP_WIDTH/2 - 95, 115, 190, 60, ILI9341_BLACK);
-	tft.drawRect(DISP_WIDTH/2 - 95, 115, 190, 60, ILI9341_BLACK);
-	tft.setCursor(DISP_WIDTH/2 - 85, 125 );
+	tft.fillRect(DISP_WIDTH/2 - 95, 100, 190, 60, ILI9341_BLACK);
+	tft.drawRect(DISP_WIDTH/2 - 95, 100, 190, 60, ILI9341_BLACK);
+	tft.setCursor(DISP_WIDTH/2 - 85, 110 );
 	tft.setTextColor(ILI9341_WHITE);
 	tft.setTextSize(6);
 	tft.print("RESET");
+
+	tft.setCursor(DISP_WIDTH/2 - 65, 190);
+	tft.setTextColor (ILI9341_WHITE);
+	tft.setTextSize(3);
+	tft.println("SCORE: ");
+	tft.setCursor(DISP_WIDTH/2 + 45, 190);
+	tft.print(score);
+
+
+	//initialize back to 0
+	score = 0;
 
 	while(true){
 		checkTouchGameOver();
@@ -172,28 +185,6 @@ void initSnake() {
   snake[0].move = 'u';
 }
 
-// uint32_t randomNum() {
-// 	// creates unsigned 16-bit random private key
-// 	// and returns it
-// 	int analogPin = 1;
-// 	int randomKey = 0;
-// 	uint32_t pinArray[8];
-// 	for (int i = 0; i < 8; ++i) {
-// 		pinArray[i] = analogRead((analogPin));
-// 		randomKey += pinArray[i];
-//
-// 		delay(50);
-// 	}
-// 	//return randomKey;
-// 	if (randomKey %5 == 0) {
-// 		return randomKey;
-// 	}
-// 	else {
-// 		randomNum();
-// 	}
-// }
-
-
 uint32_t randomNum1() {
 
 	int randomKey = 0;
@@ -235,9 +226,16 @@ coordinates random_apple() {
 void game() {
   tft.fillScreen(ILI9341_BLACK);
 
+	tft.setTextSize(1);
+	tft.setCursor(5, 228);
+	tft.print("SCORE: ");
+	tft.setCursor(45, 228);
+	tft.print(score);
+
+
   initSnake();
 	int snakeLength = 5;
-	int score = 0;
+	//int score = 0;
 	int speed = 300;
 	//randomize apple position
 	coordinates choose_apple = random_apple();
@@ -247,6 +245,9 @@ void game() {
 
   while (true) {
     processSnake(snakeLength, speed);
+
+		// tft.setCursor(15, 228);
+		// tft.print(score);
 
 		// Serial.print("choose_apple.x: ");
 		// Serial.print(choose_apple.x);
@@ -265,7 +266,12 @@ void game() {
 			tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
 			snakeLength += 2;
 			score++;
+			speed -= 25;
+			Serial.print(speed);
 			Serial.println(score);
+			tft.fillRect(40, 225, 10, 10, ILI9341_BLACK);
+			tft.setCursor(45, 228);
+			tft.print(score);
 		}
   }
 }
@@ -404,10 +410,10 @@ delay(speed);
 	/*****************************************************/
 
 	// ************ GAME OVER CONDITIONS *************** //
-	if (snake[0].y >= DISP_HEIGHT - CURSOR_SIZE/2 || snake[0].y =< 0) {
+	if (snake[0].y > DISP_HEIGHT - CURSOR_SIZE/2 || snake[0].y < 0) {
 		gameOver();
 	}
-	if (snake[0].x >= DISP_WIDTH - CURSOR_SIZE/2 || snake[0].x =< CURSOR_SIZE) {
+	if (snake[0].x > DISP_WIDTH - CURSOR_SIZE/2 || snake[0].x < CURSOR_SIZE) {
 		gameOver();
 	}
 
