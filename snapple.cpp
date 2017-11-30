@@ -265,6 +265,7 @@ void game() {
 			tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
 			snakeLength += 2;
 			score++;
+			Serial.println(score);
 		}
   }
 }
