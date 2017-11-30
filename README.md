@@ -12,9 +12,9 @@ Milestone 1: ✔️ COMPLETED NOV 28
 - Draw an apple. ✔️
 - Draw startup and game-over screens. ✔️
 
-Milestone 2:
-- Randomize location of apple each time eaten.
-- When snake eats apple, make snake longer.
+Milestone 2: ✔️ COMPLETED NOV 29
+- Randomize location of apple each time eaten. ✔️
+- When snake eats apple, make snake longer. ✔️
 
 Milestone 3:
 - Endgame conditions if snake hits corner/edge of screen. ✔️
@@ -23,9 +23,9 @@ Milestone 3:
 - After score of 5 or 10(?) increase snake movement (makes it more difficult)
 
 
-
 TO DO:
-- eating the apple and erasing it from screen
 - incrementing and recording score, then displaying once game is OVER
+- display score on screen and change display boundaries for where snake can go AND
+  where apples are drawn
 - change speed every 5 apples eaten
 - endgame condition where snake runs into itself (thing Raymond did does not work tragically)

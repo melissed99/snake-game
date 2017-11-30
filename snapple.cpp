@@ -59,7 +59,7 @@ int cursorX, cursorY;
 // forward declaration for drawing the cursor
 void startPage();
 void game();
-void processSnake(int snakeLength);
+void processSnake(int snakeLength, int speed);
 
 // Use hardware SPI (on Mega2560, #52, #51, and #50) and the above for CS/DC
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
@@ -237,34 +237,34 @@ void game() {
 
   initSnake();
 	int snakeLength = 5;
-
+	int score = 0;
+	int speed = 300;
 	//randomize apple position
 	coordinates choose_apple = random_apple();
-
 	tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED); // lol why CYAN
 
   delay(20);
 
   while (true) {
-    processSnake(snakeLength);
+    processSnake(snakeLength, speed);
 
-		Serial.print("choose_apple.x: ");
-		Serial.print(choose_apple.x);
-		Serial.print("snakehead.x: " );
-		Serial.print(snake[0].x);
-		Serial.print(" ");
-
-		Serial.print("choose_apple.y: ");
-		Serial.print(choose_apple.y);
-		Serial.print("snakehead.y: " );
-		Serial.println(snake[0].y);
+		// Serial.print("choose_apple.x: ");
+		// Serial.print(choose_apple.x);
+		// Serial.print("snakehead.x: " );
+		// Serial.print(snake[0].x);
+		// Serial.print(" ");
+    //
+		// Serial.print("choose_apple.y: ");
+		// Serial.print(choose_apple.y);
+		// Serial.print("snakehead.y: " );
+		// Serial.println(snake[0].y);
 
 		//eat apple
 		if (choose_apple.x == snake[0].x && choose_apple.y == snake[0].y){
 			choose_apple = random_apple();
 			tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
 			snakeLength += 2;
-
+			score++;
 		}
   }
 }
@@ -278,7 +278,7 @@ int* snakeTail(int tempX[], int tempY[], int snakeLength) {
   return tempX, tempY;
 }
 
-void processSnake(int snakeLength) {
+void processSnake(int snakeLength, int speed) {
   int xVal = analogRead(JOY_HORIZ);
   int yVal = analogRead(JOY_VERT);
   // copy the joystick orientation(?)
@@ -322,7 +322,7 @@ void processSnake(int snakeLength) {
       snake[0].move = 'l';
       //tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
     }
-  delay(300);
+  delay(speed);
   } // END MOVE UP
 
   // ***** SNAKE MOVE DOWN
@@ -347,7 +347,7 @@ void processSnake(int snakeLength) {
       snake[0].move = 'l';
       tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
     }
-  delay(300);
+  delay(speed);
 } // END MOVE DOWN
 
 // ***** SNAKE MOVE LEFT
@@ -372,7 +372,7 @@ if (snake[0].move == 'l') {
     snake[0].move = 'd';
     //tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
   }
-delay(300);
+delay(speed);
   } // END MOVE LEFT
 
   // ***** SNAKE MOVE RIGHT
@@ -397,16 +397,16 @@ delay(300);
       snake[0].move = 'd';
       //tft.fillRect(tempX[(snakeLength)], tempY[(snakeLength)-1], 5, 5, 0x0000);
     }
-  delay(300);
+  delay(speed);
 } // END MOVE RIGHT
 
 	/*****************************************************/
 
-	// ************ GAME OVER CONDITIONS
-	if (snake[0].y > DISP_HEIGHT - CURSOR_SIZE/2 || snake[0].y < 0) {
+	// ************ GAME OVER CONDITIONS *************** //
+	if (snake[0].y >= DISP_HEIGHT - CURSOR_SIZE/2 || snake[0].y =< 0) {
 		gameOver();
 	}
-	if (snake[0].x > DISP_WIDTH - CURSOR_SIZE/2 || snake[0].x < CURSOR_SIZE) {
+	if (snake[0].x >= DISP_WIDTH - CURSOR_SIZE/2 || snake[0].x =< CURSOR_SIZE) {
 		gameOver();
 	}
 
@@ -424,7 +424,6 @@ int main() {
 
 	while (true) {
 		game();
-    //processSnake();
   }
 
 	Serial.end();
