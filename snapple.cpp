@@ -416,6 +416,11 @@ delay(speed);
 	}
 
 	/*****///GAME OVER CONDITION IF SNAKE RUNS INTO ITSELF
+	for (int i = 1; i < snakeLength; i++) {
+		if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
+			gameOver();
+		}
+	}
 
 }
 
