@@ -28,10 +28,10 @@ Milestone 4:
 - Make README
 
 TO DO:
-- display score on screen and change display boundaries for where snake can go AND
-  where apples are drawn
+- display score on screen and change display boundaries (add a border!)
+  for where snake can go AND where apples are drawn
 - change speed every 5 apples eaten
 - endgame condition where snake runs into itself (thing Raymond did does not work tragically)
 - implement deque for snake movement
-- clean code / delete extra code
+- clean code / delete extra code, change variable names to make more sense
 - add comments, make README
