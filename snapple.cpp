@@ -53,9 +53,6 @@
 // Cursor size. For best results, use an odd number.
 #define CURSOR_SIZE 5
 
-// the cursor position on the display, stored as the middle pixel of the cursor
-int cursorX, cursorY;
-
 // forward declaration for drawing the cursor
 void startPage();
 void game();
@@ -122,8 +119,7 @@ void gameOver() {
 	tft.setCursor(DISP_WIDTH/2 + 45, 190);
 	tft.print(score);
 
-
-	//initialize back to 0
+	// reset score
 	score = 0;
 
 	while(true){
@@ -207,7 +203,7 @@ coordinates random_apple() {
 	int i = 1;
 	coordinates apple;
 
-	uint32_t randomnumX = randomNum1();////////////////////////////
+	uint32_t randomnumX = randomNum1();
 	uint32_t randomnumY = randomNum1();
 
 	apple.x = randomnumX % DISP_WIDTH;
@@ -268,7 +264,7 @@ void game() {
 			score++;
 			speed -= 25;
 			Serial.print(speed);
-			Serial.println(score);
+			//Serial.println(score);
 			tft.fillRect(40, 225, 10, 10, ILI9341_BLACK);
 			tft.setCursor(45, 228);
 			tft.print(score);
@@ -293,7 +289,6 @@ void processSnake(int snakeLength, int speed) {
   int oldY = yVal; //cursorY;
 
 	/**** PROCESS SNAKE MOVEMENT AND DRAWING/REDRAWING ****/
-	//int snakeLength = 5;
 	int tempX[snakeLength], tempY[snakeLength];
 
 	// *** restrain diagonal movement
@@ -330,7 +325,7 @@ void processSnake(int snakeLength, int speed) {
       //tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
     }
   delay(speed);
-  } // END MOVE UP
+  }
 
   // ***** SNAKE MOVE DOWN
   else if (snake[0].move == 'd') {
@@ -355,7 +350,7 @@ void processSnake(int snakeLength, int speed) {
       tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
     }
   delay(speed);
-} // END MOVE DOWN
+}
 
 // ***** SNAKE MOVE LEFT
 if (snake[0].move == 'l') {
@@ -380,7 +375,7 @@ if (snake[0].move == 'l') {
     //tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
   }
 delay(speed);
-  } // END MOVE LEFT
+  }
 
   // ***** SNAKE MOVE RIGHT
   if (snake[0].move == 'r') {
@@ -405,7 +400,7 @@ delay(speed);
       //tft.fillRect(tempX[(snakeLength)], tempY[(snakeLength)-1], 5, 5, 0x0000);
     }
   delay(speed);
-} // END MOVE RIGHT
+}
 
 	/*****************************************************/
 
@@ -419,14 +414,11 @@ delay(speed);
 
 	/*****///GAME OVER CONDITION IF SNAKE RUNS INTO ITSELF
 
-
-  // delay(50);
 }
 
 
 int main() {
 	setup();
-	//gameOver();
 	startPage();
 
 	while (true) {
