@@ -19,13 +19,19 @@ Milestone 2: ✔️ COMPLETED NOV 29
 Milestone 3:
 - Endgame conditions if snake hits corner/edge of screen. ✔️
 - Endgame conditions if snake hits itself.
-- Draw and record score.
+- Draw and record score. ✔️
 - After score of 5 or 10(?) increase snake movement (makes it more difficult)
 
+Milestone 4:
+- Implement deque for snake movement(?)
+- Clean up code and add comments
+- Make README
 
 TO DO:
-- incrementing and recording score, then displaying once game is OVER
 - display score on screen and change display boundaries for where snake can go AND
   where apples are drawn
 - change speed every 5 apples eaten
 - endgame condition where snake runs into itself (thing Raymond did does not work tragically)
+- implement deque for snake movement
+- clean code / delete extra code
+- add comments, make README
