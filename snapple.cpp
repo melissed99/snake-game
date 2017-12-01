@@ -23,7 +23,7 @@
 
 // width/height of the display when rotated horizontally
 #define TFT_WIDTH 320
-#define TFT_HEIGHT 240
+#define TFT_HEIGHT 220
 
 #define DISP_WIDTH TFT_WIDTH
 #define DISP_HEIGHT TFT_HEIGHT
@@ -135,8 +135,8 @@ void startPage() {
 	tft.setTextSize(3);
 	tft.println("SNAKE");
 
-	tft.setTextSize(1);
-	tft.setCursor(DISP_WIDTH/2 - 65, 55);
+	tft.setTextSize(2);
+	tft.setCursor(DISP_WIDTH/2 - 120, 55);
 	tft.println("Touch Start To Begin!");
 
 	tft.fillRect(DISP_WIDTH/2 - 95, 115, 190, 60, ILI9341_BLACK);
@@ -155,8 +155,8 @@ void setup() {
 	init();
 
   // constrain so the cursor does not go off of the map display window
-  cursorX = constrain(cursorX, 0, DISP_WIDTH - CURSOR_SIZE);
-  cursorY = constrain(cursorY, 0, DISP_HEIGHT - CURSOR_SIZE);
+  //cursorX = constrain(cursorX, 0, DISP_WIDTH - CURSOR_SIZE);
+  //cursorY = constrain(cursorY, 0, DISP_HEIGHT - CURSOR_SIZE);
 
 	pinMode(JOY_SEL, INPUT_PULLUP);
 
@@ -217,8 +217,8 @@ void initSnake(int snakeLength) {
   // snake[0].x = DISP_WIDTH/2;
   // snake[0].y = DISP_HEIGHT/2;
   snake[0].move = 'u';
-	for (int i = 0; i < snakeLength) {
-		snake[i].x = DISP_WIDTH/2 + 5*i;
+	for (int i = 0; i < snakeLength; i++) {
+		snake[i].x = DISP_WIDTH/2;
 		snake[i].y = DISP_HEIGHT/2 + 5*i;
 	}
 }
@@ -248,16 +248,16 @@ void game() {
 		// tft.setCursor(15, 228);
 		// tft.print(score);
 
-		// Serial.print("choose_apple.x: ");
-		// Serial.print(choose_apple.x);
-		// Serial.print("snakehead.x: " );
-		// Serial.print(snake[0].x);
-		// Serial.print(" ");
-    //
-		// Serial.print("choose_apple.y: ");
-		// Serial.print(choose_apple.y);
-		// Serial.print("snakehead.y: " );
-		// Serial.println(snake[0].y);
+		Serial.print("choose_apple.x: ");
+		Serial.print(choose_apple.x);
+		Serial.print("snakehead.x: " );
+		Serial.print(snake[0].x);
+		Serial.print(" ");
+
+		Serial.print("choose_apple.y: ");
+		Serial.print(choose_apple.y);
+		Serial.print("snakehead.y: " );
+		Serial.println(snake[0].y);
 
 		//eat apple
 		if (choose_apple.x == snake[0].x && choose_apple.y == snake[0].y){
