@@ -175,12 +175,6 @@ struct snakeStruct {
 
 snakeStruct snake[100];
 
-void initSnake() {
-  snake[0].x = DISP_WIDTH/2;
-  snake[0].y = DISP_HEIGHT/2;
-  snake[0].move = 'u';
-}
-
 uint32_t randomNum1() {
 
 	int randomKey = 0;
@@ -219,6 +213,16 @@ coordinates random_apple() {
 	return apple;
 }
 
+void initSnake(int snakeLength) {
+  // snake[0].x = DISP_WIDTH/2;
+  // snake[0].y = DISP_HEIGHT/2;
+  snake[0].move = 'u';
+	for (int i = 0; i < snakeLength) {
+		snake[i].x = DISP_WIDTH/2 + 5*i;
+		snake[i].y = DISP_HEIGHT/2 + 5*i;
+	}
+}
+
 void game() {
   tft.fillScreen(ILI9341_BLACK);
 
@@ -228,9 +232,8 @@ void game() {
 	tft.setCursor(45, 228);
 	tft.print(score);
 
-
-  initSnake();
 	int snakeLength = 5;
+	initSnake(snakeLength);
 	//int score = 0;
 	int speed = 300;
 	//randomize apple position
