@@ -62,6 +62,8 @@ void processSnake(int snakeLength, int speed);
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
+int counter;
+
 void checkTouchStartPage() {
 	TSPoint p = ts.getPoint();
 
@@ -73,9 +75,31 @@ void checkTouchStartPage() {
 	p.x = map(p.x, TS_MINX, TS_MAXX, 0, tft.width());
 	p.y = map(p.y, TS_MINY, TS_MAXY, 0, tft.height());
 
-	if ((p.x>=(DISP_WIDTH/2 - 95)) && (p.x<=255) && (p.y>=115) && (p.y<=175) ) {
+	counter=0;
+
+//EASY
+
+	if((p.y>=110) && (p.y<=313) && (p.x>=100) && (p.x<=200)){
+		counter=0;
 		game();
-		return;
+	}
+
+	//MEDIUM
+	if((p.y>=5) && (p.y<=100) && (p.x>=100) && (p.x<=200)){
+		counter=1;
+		game();
+	}
+
+	//HARD
+	if((p.y>=110) && (p.y<=313) && (p.x>=190)&& (p.x<= 280)){
+		counter=2;
+		game();
+	}
+
+	//SONIC
+	if((p.y>=5) && (p.y<=100) && (p.x>=190) && (p.x<= 280)){
+		counter=3;
+		game();
 	}
 }
 
@@ -89,7 +113,7 @@ void checkTouchGameOver() {
 	p.x = map(p.x, TS_MINX, TS_MAXX, 0, tft.width());
 	p.y = map(p.y, TS_MINY, TS_MAXY, 0, tft.height());
 
-	if ((p.x>=(DISP_WIDTH/2 - 95)) && (p.x<=255) && (p.y>=100) && (p.y<=160) ) {
+	if ((p.y>=(DISP_WIDTH/2 - 125)) && (p.y<=180) && (p.x>=100) && (p.x<=200) ) {
 		startPage();
 		return;
 	}
@@ -137,14 +161,21 @@ void startPage() {
 
 	tft.setTextSize(2);
 	tft.setCursor(DISP_WIDTH/2 - 120, 55);
-	tft.println("Touch Start To Begin!");
+	tft.println("Select a difficulty");
 
-	tft.fillRect(DISP_WIDTH/2 - 95, 115, 190, 60, ILI9341_BLACK);
-	tft.drawRect(DISP_WIDTH/2 - 95, 115, 190, 60, ILI9341_BLACK);
-	tft.setCursor(DISP_WIDTH/2 - 85, 125 );
-	tft.setTextColor(ILI9341_WHITE);
-	tft.setTextSize(6);
-	tft.print("START");
+	tft.fillRect(5, 90, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
+	tft.setCursor(35,105);
+	tft.setTextSize(4);
+	tft.print("EASY");
+	tft.fillRect(5, 160, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
+	tft.setCursor(35, 175);
+	tft.print("HARD");
+	tft.fillRect((DISP_WIDTH/2)+3, 90, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
+	tft.setCursor(167, 105);
+	tft.print("MEDIUM");
+	tft.fillRect((DISP_WIDTH/2)+3, 160, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
+	tft.setCursor(180, 175);
+	tft.print("SONIC");
 
 	while(true){
 		checkTouchStartPage();
@@ -226,27 +257,40 @@ void initSnake(int snakeLength) {
 void game() {
   tft.fillScreen(ILI9341_BLACK);
 
+	Serial.print(counter);
+
 	tft.setTextSize(1);
 	tft.setCursor(5, 228);
 	tft.print("SCORE: ");
 	tft.setCursor(45, 228);
 	tft.print(score);
+	tft.drawLine(0, TFT_HEIGHT+5, DISP_WIDTH, TFT_HEIGHT+5, ILI9341_WHITE);
 
 	int snakeLength = 5;
 	initSnake(snakeLength);
-	//int score = 0;
-	int speed = 300;
+
+	int speed = 0;
+	if (counter==0){
+		speed=300;
+	}
+	if(counter==1){
+		speed=150;
+	}
+	if(counter==2){
+		speed=100;
+	}
+	if(counter==3){
+		speed=50;
+	}
+
 	//randomize apple position
 	coordinates choose_apple = random_apple();
-	tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED); // lol why CYAN
+	tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
 
   delay(20);
 
   while (true) {
     processSnake(snakeLength, speed);
-
-		// tft.setCursor(15, 228);
-		// tft.print(score);
 
 		Serial.print("choose_apple.x: ");
 		Serial.print(choose_apple.x);
@@ -265,10 +309,9 @@ void game() {
 			tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
 			snakeLength += 2;
 			score++;
-			speed -= 25;
+			//speed -= 25;
 			Serial.print(speed);
-			//Serial.println(score);
-			tft.fillRect(40, 225, 10, 10, ILI9341_BLACK);
+			tft.fillRect(40, 228, 10, 10, ILI9341_BLACK);
 			tft.setCursor(45, 228);
 			tft.print(score);
 		}
