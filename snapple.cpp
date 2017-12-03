@@ -457,8 +457,6 @@ delay(speed);
 	if (snake[0].x > DISP_WIDTH - CURSOR_SIZE/2 || snake[0].x < CURSOR_SIZE) {
 		gameOver();
 	}
-
-	/*****///GAME OVER CONDITION IF SNAKE RUNS INTO ITSELF
 	for (int i = 1; i < snakeLength; i++) {
 		if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
 			gameOver();

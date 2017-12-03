@@ -16,11 +16,11 @@ Milestone 2: ✔️ COMPLETED NOV 29
 - Randomize location of apple each time eaten. ✔️
 - When snake eats apple, make snake longer. ✔️
 
-Milestone 3:
+Milestone 3: ✔️ COMPLETED DEC 1
 - Endgame conditions if snake hits corner/edge of screen. ✔️
-- Endgame conditions if snake hits itself.
-- Draw and record score. ✔️
-- After score of 5 or 10(?) increase snake movement (makes it more difficult)
+- Endgame conditions if snake hits itself. ✔️
+- Draw and record score with new boundaries. ✔️
+- Implement different levels of difficulty (i.e. varying snake speed)✔️
 
 Milestone 4:
 - Implement deque for snake movement(?)
@@ -28,10 +28,7 @@ Milestone 4:
 - Make README
 
 TO DO:
-- display score on screen and change display boundaries (add a border!)
-  for where snake can go AND where apples are drawn
-- change speed every 5 apples eaten
-- endgame condition where snake runs into itself (thing Raymond did does not work tragically)
+- change display boundaries (add a border!) ?
 - implement deque for snake movement
 - clean code / delete extra code, change variable names to make more sense
 - add comments, make README
