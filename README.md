@@ -28,7 +28,8 @@ Milestone 4:
 - Make README
 
 TO DO:
-- change display boundaries (add a border!) ?
+- SONIC MODE DOES NOT WORK (DOESNT REDRAW APPLE AFTER EATING?!)
+- add display border!!!
 - implement deque for snake movement
 - clean code / delete extra code, change variable names to make more sense
 - add comments, make README
