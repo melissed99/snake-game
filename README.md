@@ -28,7 +28,6 @@ Milestone 4:
 - Make README
 
 TO DO:
-  - WAIT IT WORKS BUT ONLY AFTER RESETING/PLAYING SECOND GAME DOES THE DOT GLITCH THING
 - implement deque for snake movement
 - clean code / delete extra code, change variable names to make more sense
 - add comments, make README
