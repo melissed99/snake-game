@@ -206,16 +206,17 @@ struct snakeStruct {
 
 snakeStruct snake[100];
 
-uint32_t randomNum1() {
+uint32_t randomNum() {
 
 	int randomKey = 0;
+	srand(millis());
  	randomKey = rand();
-	//return randomKey;
+
 	if (randomKey %5 == 0) {
 		return randomKey;
 	}
 	else {
-		randomNum1();
+		randomNum();
 	}
 }
 
@@ -223,13 +224,14 @@ struct coordinates {
 	uint32_t x;
 	uint32_t y;
 };
+int snakeLength;
 
-coordinates random_apple() {
-	int i = 1;
+coordinates randomizeApple() {
+
 	coordinates apple;
 
-	uint32_t randomnumX = randomNum1();
-	uint32_t randomnumY = randomNum1();
+	uint32_t randomnumX = randomNum();
+	uint32_t randomnumY = randomNum();
 
 	apple.x = randomnumX % DISP_WIDTH;
 	apple.y = randomnumY % DISP_HEIGHT;
@@ -241,8 +243,28 @@ coordinates random_apple() {
 	if (apple.y <= 0 || apple.y >= DISP_HEIGHT) {
 		apple.y = randomnumY % DISP_HEIGHT;
 	}
+
+	for(int i=0; i<snakeLength; i++){
+		//to avoid placing an apple on top of the snake's body
+		if (apple.x == snake[i].x && apple.y == snake[i].y) {
+			apple.x = randomnumX % DISP_WIDTH;
+			apple.y = randomnumY % DISP_HEIGHT;
+		}
+		Serial.print(i);
+	}
+
+// int i=0;
+// while(i<snakeLength){
+// 	if (apple.x == snake[i].x || apple.y == snake[i].y) {
+// 				apple.x = randomnumX % DISP_WIDTH;
+// 				apple.y = randomnumY % DISP_HEIGHT;
+//	}
+// }
+
+
 	return apple;
 }
+
 
 void initSnake(int snakeLength) {
   // snake[0].x = DISP_WIDTH/2;
@@ -257,7 +279,7 @@ void initSnake(int snakeLength) {
 void game() {
   tft.fillScreen(ILI9341_BLACK);
 
-	Serial.print(counter);
+	//Serial.print(counter);
 
 	tft.setTextSize(1);
 	tft.setCursor(5, 228);
@@ -270,50 +292,75 @@ void game() {
 	initSnake(snakeLength);
 
 	int speed = 0;
-	if (counter==0){
+	if (counter == 0) {
 		speed=300;
 	}
-	if(counter==1){
-		speed=150;
-	}
-	if(counter==2){
+	if (counter == 1) {
 		speed=100;
 	}
-	if(counter==3){
+	if (counter == 2) {
 		speed=50;
+	}
+	if (counter == 3) {
+		speed=10;
 	}
 
 	//randomize apple position
-	coordinates choose_apple = random_apple();
-	tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
+	coordinates appleLocation = randomizeApple();
+	tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
 
   delay(20);
 
   while (true) {
     processSnake(snakeLength, speed);
 
-		Serial.print("choose_apple.x: ");
-		Serial.print(choose_apple.x);
-		Serial.print("snakehead.x: " );
-		Serial.print(snake[0].x);
-		Serial.print(" ");
-
-		Serial.print("choose_apple.y: ");
-		Serial.print(choose_apple.y);
-		Serial.print("snakehead.y: " );
-		Serial.println(snake[0].y);
+		// Serial.print("appleLocation.x: ");
+		// Serial.print(appleLocation.x);
+		// Serial.print("snakehead.x: " );
+		// Serial.print(snake[0].x);
+		// Serial.print(" ");
+		//
+		// Serial.print("appleLocation.y: ");
+		// Serial.print(appleLocation.y);
+		// Serial.print("snakehead.y: " );
+		// Serial.println(snake[0].y);
 
 		//eat apple
-		if (choose_apple.x == snake[0].x && choose_apple.y == snake[0].y){
-			choose_apple = random_apple();
-			tft.fillRect(choose_apple.x, choose_apple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
+		if (appleLocation.x == snake[0].x && appleLocation.y == snake[0].y){
+			appleLocation = randomizeApple();
+
+			// for(int i=0; i<snakeLength; i++){
+			// 	//to avoid placing an apple on top of the snake's body
+			//
+			// 	coordinates randomapple = randomizeApple();
+			// 	if (apple.x == snake[i].x && apple.y == snake[i].y) {
+			// 		appleLocation.x = randomapple % DISP_WIDTH;
+			// 		appleLocation.y = randomapple % DISP_HEIGHT;
+			// 	}
+			// }
+
+
+				// //to avoid placing an apple on top of the snake's body
+				// 	if (appleLocation.x == snake[].x || appleLocation.y == snake[].y) {
+				// 		appleLocation = randomizeApple();
+				// 	}
+
+
+			tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
 			snakeLength += 2;
+			// int oldCoord[snakeLength][snakeLength]
+			// for i = 0; i < snakeLength; i++
+			// 	for j = 0; j < snakeLength; j++
+			//		oldCoord[i] = snake[i].x;
+			//		oldCoord[j] = snake[j].y;
+			//Serial.print(snakeLength);
 			score++;
 			//speed -= 25;
-			Serial.print(speed);
-			tft.fillRect(40, 228, 10, 10, ILI9341_BLACK);
+			tft.fillRect(40, 228, 20, 10, ILI9341_BLACK);
 			tft.setCursor(45, 228);
 			tft.print(score);
+
+
 		}
   }
 }
