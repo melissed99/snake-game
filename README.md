@@ -28,9 +28,7 @@ Milestone 4:
 - Make README
 
 TO DO:
-- SONIC MODE DOES NOT WORK (DOESNT REDRAW APPLE AFTER EATING?!)
   - WAIT IT WORKS BUT ONLY AFTER RESETING/PLAYING SECOND GAME DOES THE DOT GLITCH THING
-- add display border!!!
 - implement deque for snake movement
 - clean code / delete extra code, change variable names to make more sense
 - add comments, make README

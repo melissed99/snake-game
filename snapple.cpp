@@ -327,6 +327,7 @@ void game() {
 
 		//eat apple
 		if (appleLocation.x == snake[0].x && appleLocation.y == snake[0].y){
+			tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_WHITE);
 			appleLocation = randomizeApple();
 
 			// for(int i=0; i<snakeLength; i++){
