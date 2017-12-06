@@ -224,7 +224,7 @@ struct coordinates {
 	uint32_t x;
 	uint32_t y;
 };
-int snakeLength;
+//int snakeLength = 5;
 
 coordinates randomizeApple() {
 
@@ -237,21 +237,21 @@ coordinates randomizeApple() {
 	apple.y = randomnumY % DISP_HEIGHT;
 
 	//constrain so that the apple will appear within the screen
-	if (apple.x <= 0 || apple.x >= DISP_WIDTH) {
-		apple.x = randomnumX % DISP_WIDTH;
-	}
-	if (apple.y <= 0 || apple.y >= DISP_HEIGHT) {
-		apple.y = randomnumY % DISP_HEIGHT;
-	}
-
-	for(int i=0; i<snakeLength; i++){
-		//to avoid placing an apple on top of the snake's body
-		if (apple.x == snake[i].x && apple.y == snake[i].y) {
-			apple.x = randomnumX % DISP_WIDTH;
-			apple.y = randomnumY % DISP_HEIGHT;
-		}
-		Serial.print(i);
-	}
+	// if (apple.x <= 0 || apple.x >= DISP_WIDTH) {
+	// 	apple.x = randomnumX % DISP_WIDTH;
+	// }
+	// if (apple.y <= 0 || apple.y >= DISP_HEIGHT) {
+	// 	apple.y = randomnumY % DISP_HEIGHT;
+	// }
+	// Serial.print(snakeLength);
+	//
+	// for(int i=0; i<snakeLength; i++){
+	// 	//to avoid placing an apple on top of the snake's body
+	// 	if (apple.x == snake[i].x && apple.y == snake[i].y) {
+	// 		apple.x = randomnumX % DISP_WIDTH;
+	// 		apple.y = randomnumY % DISP_HEIGHT;
+	// 	}
+	// }
 
 // int i=0;
 // while(i<snakeLength){
@@ -278,8 +278,6 @@ void initSnake(int snakeLength) {
 
 void game() {
   tft.fillScreen(ILI9341_BLACK);
-
-	//Serial.print(counter);
 
 	tft.setTextSize(1);
 	tft.setCursor(5, 228);
@@ -330,6 +328,20 @@ void game() {
 			tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_WHITE);
 			appleLocation = randomizeApple();
 
+			Serial.print(snakeLength);
+
+			for(int i=0; i<snakeLength; i++){
+				//to avoid placing an apple on top of the snake's body
+				if (appleLocation.x == snake[i].x && appleLocation.y == snake[i].y) {
+
+					uint32_t randomnumappX=randomNum();
+					uint32_t randomnumappY=randomNum();
+					appleLocation.x = randomnumappX % DISP_WIDTH;
+					appleLocation.y = randomnumappY % DISP_HEIGHT;
+				}
+			}
+
+
 			// for(int i=0; i<snakeLength; i++){
 			// 	//to avoid placing an apple on top of the snake's body
 			//
@@ -354,7 +366,6 @@ void game() {
 			// 	for j = 0; j < snakeLength; j++
 			//		oldCoord[i] = snake[i].x;
 			//		oldCoord[j] = snake[j].y;
-			//Serial.print(snakeLength);
 			score++;
 			//speed -= 25;
 			tft.fillRect(40, 228, 20, 10, ILI9341_BLACK);
