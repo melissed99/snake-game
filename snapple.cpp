@@ -23,10 +23,10 @@
 
 // width/height of the display when rotated horizontally
 #define TFT_WIDTH 320
-#define TFT_HEIGHT 220
+#define TFT_HEIGHT 240
 
 #define DISP_WIDTH TFT_WIDTH
-#define DISP_HEIGHT TFT_HEIGHT
+#define DISP_HEIGHT 220
 
 // constants for the joystick
 #define JOY_DEADZONE 64
@@ -186,8 +186,8 @@ void setup() {
 	init();
 
   // constrain so the cursor does not go off of the map display window
-  //cursorX = constrain(cursorX, 0, DISP_WIDTH - CURSOR_SIZE);
-  //cursorY = constrain(cursorY, 0, DISP_HEIGHT - CURSOR_SIZE);
+  //snake[0].x = constrain(cursorX, 0, DISP_WIDTH - CURSOR_SIZE);
+  //snake[0].y = constrain(snake[0].y, 0, DISP_HEIGHT - CURSOR_SIZE);
 
 	pinMode(JOY_SEL, INPUT_PULLUP);
 
@@ -284,7 +284,7 @@ void game() {
 	tft.print("SCORE: ");
 	tft.setCursor(45, 228);
 	tft.print(score);
-	tft.drawLine(0, TFT_HEIGHT+5, DISP_WIDTH, TFT_HEIGHT+5, ILI9341_WHITE);
+	tft.drawLine(0, DISP_HEIGHT+5, DISP_WIDTH, DISP_HEIGHT+5, ILI9341_WHITE);
 
 	int snakeLength = 5;
 	initSnake(snakeLength);
@@ -302,6 +302,9 @@ void game() {
 	if (counter == 3) {
 		speed=10;
 	}
+
+	// snake[0].x = constrain(snake[0].x, 0, DISP_WIDTH - CURSOR_SIZE);
+	// snake[0].y = constrain(snake[0].y, 0, DISP_HEIGHT - CURSOR_SIZE);
 
 	//randomize apple position
 	coordinates appleLocation = randomizeApple();
@@ -510,10 +513,10 @@ delay(speed);
 	/*****************************************************/
 
 	// ************ GAME OVER CONDITIONS *************** //
-	if (snake[0].y > DISP_HEIGHT - CURSOR_SIZE/2 || snake[0].y < 0) {
+	if (snake[0].y - CURSOR_SIZE/2> DISP_HEIGHT || snake[0].y < 0) {
 		gameOver();
 	}
-	if (snake[0].x > DISP_WIDTH - CURSOR_SIZE/2 || snake[0].x < CURSOR_SIZE) {
+	if (snake[0].x > DISP_WIDTH|| snake[0].x < 0) {
 		gameOver();
 	}
 	for (int i = 1; i < snakeLength; i++) {
