@@ -22,12 +22,15 @@ Milestone 3: ✔️ COMPLETED DEC 1
 - Draw and record score with new boundaries. ✔️
 - Implement different levels of difficulty (i.e. varying snake speed)✔️
 
-Milestone 4:
-- Implement deque for snake movement(?)
+Milestone 4: TO BE COMPLETED DEC 6?
+- Implement deque for snake movement(?) 😢
 - Clean up code and add comments
 - Make README
 
 TO DO:
 - implement deque for snake movement
+- fix bug where apple could potentially be drawn underneath snake
+- fix bug where apple just sometimes does not draw at all?
+- flashing bug fixed (but not really)
 - clean code / delete extra code, change variable names to make more sense
 - add comments, make README

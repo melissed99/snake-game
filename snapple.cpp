@@ -23,10 +23,15 @@
 
 // width/height of the display when rotated horizontally
 #define TFT_WIDTH 320
-#define TFT_HEIGHT 220
+#define TFT_HEIGHT 240
+<<<<<<< HEAD
+#define GREEN 0x07E0
+#define MAGENTA 0xF81F
+=======
+>>>>>>> 99cdf6825bdbbc85a97f4e82436154dfd6a88fcf
 
 #define DISP_WIDTH TFT_WIDTH
-#define DISP_HEIGHT TFT_HEIGHT
+#define DISP_HEIGHT 220
 
 // constants for the joystick
 #define JOY_DEADZONE 64
@@ -122,15 +127,16 @@ void checkTouchGameOver() {
 int score = 0;
 
 void gameOver() {
-	tft.fillScreen(0x07E0);
+	tft.fillScreen(GREEN);
 
 	tft.setCursor(30, 20);
 	tft.setTextColor(ILI9341_RED);
 	tft.setTextSize(5);
 	tft.print("GAME OVER");
 
-	tft.fillRect(DISP_WIDTH/2 - 95, 100, 190, 60, ILI9341_BLACK);
-	tft.drawRect(DISP_WIDTH/2 - 95, 100, 190, 60, ILI9341_BLACK);
+	tft.fillRect(DISP_WIDTH/2 - 95, 100, 190, 60, GREEN);
+	tft.fillRect(DISP_WIDTH/2 - 97, 102, 186, 56, ILI9341_BLACK);
+	//tft.drawRect(DISP_WIDTH/2 - 95, 100, 190, 60, ILI9341_BLACK);
 	tft.setCursor(DISP_WIDTH/2 - 85, 110 );
 	tft.setTextColor(ILI9341_WHITE);
 	tft.setTextSize(6);
@@ -152,7 +158,8 @@ void gameOver() {
 }
 
 void startPage() {
-	tft.fillScreen(0x8811);
+	tft.fillScreen(ILI9341_BLACK);
+	//uint16_t purple = 0x8811;
 
 	tft.setCursor(DISP_WIDTH/2 - 45, 30);
 	tft.setTextColor (ILI9341_WHITE);
@@ -162,18 +169,22 @@ void startPage() {
 	tft.setTextSize(2);
 	tft.setCursor(DISP_WIDTH/2 - 120, 55);
 	tft.println("Select a difficulty");
-
-	tft.fillRect(5, 90, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
+	uint16_t customColour = MAGENTA; //tft.color565(142, 53, 239);
+	tft.fillRect(5, 90, (DISP_WIDTH/2)-10, 60 , customColour);
+	tft.fillRect(7, 92, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
 	tft.setCursor(35,105);
 	tft.setTextSize(4);
 	tft.print("EASY");
-	tft.fillRect(5, 160, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
+	tft.fillRect(5, 160, (DISP_WIDTH/2)-10, 60 , customColour);
+	tft.fillRect(7, 162, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
 	tft.setCursor(35, 175);
 	tft.print("HARD");
-	tft.fillRect((DISP_WIDTH/2)+3, 90, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
+	tft.fillRect((DISP_WIDTH/2)+3, 90, (DISP_WIDTH/2)-10, 60 , customColour);
+	tft.fillRect((DISP_WIDTH/2)+5, 92, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
 	tft.setCursor(167, 105);
 	tft.print("MEDIUM");
-	tft.fillRect((DISP_WIDTH/2)+3, 160, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
+	tft.fillRect((DISP_WIDTH/2)+3, 160, (DISP_WIDTH/2)-10, 60 , customColour);
+	tft.fillRect((DISP_WIDTH/2)+5, 162, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
 	tft.setCursor(180, 175);
 	tft.print("SONIC");
 
@@ -186,8 +197,8 @@ void setup() {
 	init();
 
   // constrain so the cursor does not go off of the map display window
-  //cursorX = constrain(cursorX, 0, DISP_WIDTH - CURSOR_SIZE);
-  //cursorY = constrain(cursorY, 0, DISP_HEIGHT - CURSOR_SIZE);
+  //snake[0].x = constrain(cursorX, 0, DISP_WIDTH - CURSOR_SIZE);
+  //snake[0].y = constrain(snake[0].y, 0, DISP_HEIGHT - CURSOR_SIZE);
 
 	pinMode(JOY_SEL, INPUT_PULLUP);
 
@@ -284,7 +295,7 @@ void game() {
 	tft.print("SCORE: ");
 	tft.setCursor(45, 228);
 	tft.print(score);
-	tft.drawLine(0, TFT_HEIGHT+5, DISP_WIDTH, TFT_HEIGHT+5, ILI9341_WHITE);
+	tft.drawLine(0, DISP_HEIGHT+5, DISP_WIDTH, DISP_HEIGHT+5, ILI9341_WHITE);
 
 	int snakeLength = 5;
 	initSnake(snakeLength);
@@ -302,6 +313,9 @@ void game() {
 	if (counter == 3) {
 		speed=10;
 	}
+
+	// snake[0].x = constrain(snake[0].x, 0, DISP_WIDTH - CURSOR_SIZE);
+	// snake[0].y = constrain(snake[0].y, 0, DISP_HEIGHT - CURSOR_SIZE);
 
 	//randomize apple position
 	coordinates appleLocation = randomizeApple();
@@ -510,10 +524,10 @@ delay(speed);
 	/*****************************************************/
 
 	// ************ GAME OVER CONDITIONS *************** //
-	if (snake[0].y > DISP_HEIGHT - CURSOR_SIZE/2 || snake[0].y < 0) {
+	if (snake[0].y - CURSOR_SIZE/2> DISP_HEIGHT || snake[0].y < 0) {
 		gameOver();
 	}
-	if (snake[0].x > DISP_WIDTH - CURSOR_SIZE/2 || snake[0].x < CURSOR_SIZE) {
+	if (snake[0].x > DISP_WIDTH|| snake[0].x < 0) {
 		gameOver();
 	}
 	for (int i = 1; i < snakeLength; i++) {
