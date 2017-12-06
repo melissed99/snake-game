@@ -23,12 +23,6 @@
 
 // width/height of the display when rotated horizontally
 #define TFT_WIDTH 320
-#define TFT_HEIGHT 240
-<<<<<<< HEAD
-#define GREEN 0x07E0
-#define MAGENTA 0xF81F
-=======
->>>>>>> 99cdf6825bdbbc85a97f4e82436154dfd6a88fcf
 
 #define DISP_WIDTH TFT_WIDTH
 #define DISP_HEIGHT 220
