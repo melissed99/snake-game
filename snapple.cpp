@@ -23,8 +23,7 @@
 
 // width/height of the display when rotated horizontally
 #define TFT_WIDTH 320
-#define GREEN 0x07E0
-#define MAGENTA 0xF81F
+#define TFT_HEIGHT 240
 
 #define DISP_WIDTH TFT_WIDTH
 #define DISP_HEIGHT 220
@@ -123,16 +122,15 @@ void checkTouchGameOver() {
 int score = 0;
 
 void gameOver() {
-	tft.fillScreen(GREEN);
+	tft.fillScreen(0x07E0);
 
 	tft.setCursor(30, 20);
 	tft.setTextColor(ILI9341_RED);
 	tft.setTextSize(5);
 	tft.print("GAME OVER");
 
-	tft.fillRect(DISP_WIDTH/2 - 95, 100, 190, 60, GREEN);
-	tft.fillRect(DISP_WIDTH/2 - 97, 102, 186, 56, ILI9341_BLACK);
-	//tft.drawRect(DISP_WIDTH/2 - 95, 100, 190, 60, ILI9341_BLACK);
+	tft.fillRect(DISP_WIDTH/2 - 95, 100, 190, 60, ILI9341_BLACK);
+	tft.drawRect(DISP_WIDTH/2 - 95, 100, 190, 60, ILI9341_BLACK);
 	tft.setCursor(DISP_WIDTH/2 - 85, 110 );
 	tft.setTextColor(ILI9341_WHITE);
 	tft.setTextSize(6);
@@ -154,8 +152,7 @@ void gameOver() {
 }
 
 void startPage() {
-	tft.fillScreen(ILI9341_BLACK);
-	//uint16_t purple = 0x8811;
+	tft.fillScreen(0x8811);
 
 	tft.setCursor(DISP_WIDTH/2 - 45, 30);
 	tft.setTextColor (ILI9341_WHITE);
@@ -165,22 +162,18 @@ void startPage() {
 	tft.setTextSize(2);
 	tft.setCursor(DISP_WIDTH/2 - 120, 55);
 	tft.println("Select a difficulty");
-	uint16_t customColour = MAGENTA; //tft.color565(142, 53, 239);
-	tft.fillRect(5, 90, (DISP_WIDTH/2)-10, 60 , customColour);
-	tft.fillRect(7, 92, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
+
+	tft.fillRect(5, 90, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
 	tft.setCursor(35,105);
 	tft.setTextSize(4);
 	tft.print("EASY");
-	tft.fillRect(5, 160, (DISP_WIDTH/2)-10, 60 , customColour);
-	tft.fillRect(7, 162, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
+	tft.fillRect(5, 160, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
 	tft.setCursor(35, 175);
 	tft.print("HARD");
-	tft.fillRect((DISP_WIDTH/2)+3, 90, (DISP_WIDTH/2)-10, 60 , customColour);
-	tft.fillRect((DISP_WIDTH/2)+5, 92, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
+	tft.fillRect((DISP_WIDTH/2)+3, 90, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
 	tft.setCursor(167, 105);
 	tft.print("MEDIUM");
-	tft.fillRect((DISP_WIDTH/2)+3, 160, (DISP_WIDTH/2)-10, 60 , customColour);
-	tft.fillRect((DISP_WIDTH/2)+5, 162, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
+	tft.fillRect((DISP_WIDTH/2)+3, 160, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
 	tft.setCursor(180, 175);
 	tft.print("SONIC");
 
@@ -315,6 +308,7 @@ void game() {
 
 	//randomize apple position
 	coordinates appleLocation = randomizeApple();
+	coordinates prizeApple = randomizeApple();
 	tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
 
   delay(20);
@@ -332,15 +326,44 @@ void game() {
 		// Serial.print(appleLocation.y);
 		// Serial.print("snakehead.y: " );
 		// Serial.println(snake[0].y);
+		// Serial.print(score);
+
+		// Serial.print("appleLocation.x: ");
+		// Serial.print(prizeApple.x);
+		// Serial.print("snakehead.x: " );
+		// Serial.print(snake[0].x);
+		// Serial.print(" ");
+		//
+		// Serial.print("appleLocation.y: ");
+		// Serial.print(prizeApple.y);
+		// Serial.print("snakehead.y: " );
+		// Serial.println(snake[0].y);
+		// //Serial.print(score);
+
+		if(score % 5 ==0 && score!= 0){
+			tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLUE);
+				if (prizeApple.x == snake[0].x && prizeApple.y == snake[0].y){
+
+					prizeApple = randomizeApple();
+					snakeLength += 2;
+					score += 3;
+
+					tft.fillRect(40, 228, 20, 10, ILI9341_BLACK);
+					tft.setCursor(45, 228);
+					tft.print(score);
+
+					//return;
+				}
+		}
+
 
 		//eat apple
 		if (appleLocation.x == snake[0].x && appleLocation.y == snake[0].y){
 			tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_WHITE);
 			appleLocation = randomizeApple();
 
-			Serial.print(snakeLength);
-
 			for(int i=0; i<snakeLength; i++){
+
 				//to avoid placing an apple on top of the snake's body
 				if (appleLocation.x == snake[i].x && appleLocation.y == snake[i].y) {
 
@@ -362,7 +385,6 @@ void game() {
 			// 	}
 			// }
 
-
 				// //to avoid placing an apple on top of the snake's body
 				// 	if (appleLocation.x == snake[].x || appleLocation.y == snake[].y) {
 				// 		appleLocation = randomizeApple();
@@ -377,13 +399,27 @@ void game() {
 			//		oldCoord[i] = snake[i].x;
 			//		oldCoord[j] = snake[j].y;
 			score++;
-			//speed -= 25;
+
+			// if(score % 5 ==0 && score!= 0){
+			// 	tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLUE);
+			// 		if (prizeApple.x == snake[0].x && prizeApple.y == snake[0].y){
+			//
+			// 			prizeApple = randomizeApple();
+			// 			snakeLength += 2;
+			// 			score += 3;
+			//
+			// 			//return;
+			// 		}
+			// }
+
 			tft.fillRect(40, 228, 20, 10, ILI9341_BLACK);
 			tft.setCursor(45, 228);
 			tft.print(score);
 
 
 		}
+
+
   }
 }
 
