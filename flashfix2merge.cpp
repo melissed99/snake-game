@@ -24,8 +24,6 @@
 // width/height of the display when rotated horizontally
 #define TFT_WIDTH 320
 #define TFT_HEIGHT 220
-#define GREEN 0x07E0
-#define MAGENTA 0xF81F
 
 #define DISP_WIDTH TFT_WIDTH
 #define DISP_HEIGHT TFT_HEIGHT
@@ -133,8 +131,8 @@ void gameOver() {
 	tft.setTextSize(5);
 	tft.print("GAME OVER");
 
-	tft.fillRect(DISP_WIDTH/2 - 96, 100, 190+2, 60, GREEN);
-	tft.fillRect(DISP_WIDTH/2 - 96+2, 100+2, 190-2, 60-4, ILI9341_BLACK);
+	tft.drawRect(DISP_WIDTH/2 - 96, 100, 190+2, 60, ILI9341_YELLOW);
+	tft.drawRect(DISP_WIDTH/2 - 96+2, 100+2, 190-2, 60-4, ILI9341_GREEN);
 	//tft.drawRect(DISP_WIDTH/2 - 95, 100, 190, 60, ILI9341_BLACK);
 	tft.setCursor(DISP_WIDTH/2 - 85, 110);
 	tft.setTextColor(ILI9341_WHITE);
@@ -168,22 +166,23 @@ void startPage() {
 	tft.setTextSize(2);
 	tft.setCursor(DISP_WIDTH/2 - 120, 55);
 	tft.println("Select a difficulty");
-	uint16_t customColour = MAGENTA; //tft.color565(142, 53, 239);
-	tft.fillRect(5, 90, (DISP_WIDTH/2)-10, 60 , customColour);
-	tft.fillRect(7, 92, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
+	tft.drawRect(5, 90, (DISP_WIDTH/2)-10, 60 , ILI9341_MAGENTA);
+	//tft.fillRect(7, 92, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
+	//tft.drawRect(6, 91, (DISP_WIDTH/2)-12, 58, customColour);
+	tft.drawRect(7, 92, (DISP_WIDTH/2)-14, 56 , ILI9341_MAGENTA);
 	tft.setCursor(35,105);
 	tft.setTextSize(4);
 	tft.print("EASY");
-	tft.fillRect(5, 160, (DISP_WIDTH/2)-10, 60 , customColour);
-	tft.fillRect(7, 162, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
+	tft.drawRect(5, 160, (DISP_WIDTH/2)-10, 60 , ILI9341_MAGENTA);
+	tft.drawRect(7, 162, (DISP_WIDTH/2)-14, 56 , ILI9341_MAGENTA);
 	tft.setCursor(35, 175);
 	tft.print("HARD");
-	tft.fillRect((DISP_WIDTH/2)+3, 90, (DISP_WIDTH/2)-10, 60 , customColour);
-	tft.fillRect((DISP_WIDTH/2)+5, 92, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
+	tft.drawRect((DISP_WIDTH/2)+3, 90, (DISP_WIDTH/2)-10, 60 ,ILI9341_MAGENTA);
+	tft.drawRect((DISP_WIDTH/2)+5, 92, (DISP_WIDTH/2)-14, 56 , ILI9341_MAGENTA);
 	tft.setCursor(167, 105);
 	tft.print("MEDIUM");
-	tft.fillRect((DISP_WIDTH/2)+3, 160, (DISP_WIDTH/2)-10, 60 , customColour);
-	tft.fillRect((DISP_WIDTH/2)+5, 162, (DISP_WIDTH/2)-14, 56 , ILI9341_BLACK);
+	tft.drawRect((DISP_WIDTH/2)+3, 160, (DISP_WIDTH/2)-10, 60 , ILI9341_MAGENTA);
+	tft.drawRect((DISP_WIDTH/2)+5, 162, (DISP_WIDTH/2)-14, 56 , ILI9341_MAGENTA);
 	tft.setCursor(180, 175);
 	tft.print("SONIC");
 
@@ -289,7 +288,7 @@ void eraseTail(int snakeLength, snakeStruct snake[], int tempX[], int tempY[]) {
 	for (int i = 1; i < snakeLength + 1; i++) {
 		snake[i].x = tempX[i];
 		snake[i].y = tempY[i];
-		tft.fillRect(snake[i].x, snake[i].y, 5, 5, ILI9341_BLACK);
+		//tft.fillRect(snake[i].x, snake[i].y, 5, 5, ILI9341_BLUE);
 	}
 }
 
@@ -297,13 +296,14 @@ void game() {
   tft.fillScreen(ILI9341_BLACK);
 
 	tft.setTextSize(1);
-	tft.setCursor(5, 228);
+	tft.setCursor(5, 228+1);
 	tft.print("SCORE: ");
-	tft.setCursor(45, 228);
+	tft.setCursor(45, 228+1);
 	tft.print(score);
-	tft.drawRect(0,TFT_HEIGHT+5, DISP_WIDTH, TFT_HEIGHT-2, ILI9341_WHITE);
-	tft.drawLine(0, TFT_HEIGHT+5, DISP_WIDTH, TFT_HEIGHT+5, ILI9341_WHITE);
-	tft.drawLine(0, TFT_HEIGHT+19, DISP_WIDTH, TFT_HEIGHT+19, ILI9341_WHITE);
+	//tft.drawRect(0,TFT_HEIGHT+5, DISP_WIDTH, TFT_HEIGHT+6, ILI9341_WHITE);
+	//tft.drawLine(0, TFT_HEIGHT+5, DISP_WIDTH, TFT_HEIGHT+5, ILI9341_WHITE);
+	//tft.drawLine(0, TFT_HEIGHT+19, DISP_WIDTH, TFT_HEIGHT+19, ILI9341_WHITE);
+	tft.drawRect(0,TFT_HEIGHT+5, DISP_WIDTH, 15, ILI9341_YELLOW);
 
 	int snakeLength = 5;
 	initSnake(snakeLength);
@@ -311,15 +311,27 @@ void game() {
 	int speed = 0;
 	if (counter == 0) {
 		speed=300;
+		tft.setCursor(260, 229);
+		tft.print("EASY MODE");
 	}
 	if (counter == 1) {
 		speed=100;
+		tft.setCursor(250, 229);
+		tft.print("MEDIUM MODE");
 	}
 	if (counter == 2) {
 		speed=50;
+		tft.setCursor(260, 229);
+		tft.print("HARD MODE");
 	}
 	if (counter == 3) {
 		speed=10;
+		tft.setTextColor(ILI9341_BLUE);
+		tft.setCursor(120, 229);
+		tft.print("GOTTA GO FAST");
+		tft.setTextColor(ILI9341_WHITE);
+		tft.setCursor(255, 229);
+		tft.print("SONIC MODE");
 	}
 
 	//randomize apple position
@@ -351,18 +363,18 @@ void game() {
 
 		//eat apple
 		if (appleLocation.x == snake[0].x && appleLocation.y == snake[0].y){
-			tft.fillRect(snake[snakeLength].x, snake[snakeLength].y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLACK);
-			tft.fillRect(snake[snakeLength+1].x, snake[snakeLength+1].y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLACK);
-			tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLUE);
-			delay(400); // take out later
-			Serial.print("APPLE LOCATION: ");
-			Serial.print(appleLocation.x);
-			Serial.print(", ");
-			Serial.println(appleLocation.y);
+			//tft.fillRect(snake[snakeLength].x, snake[snakeLength].y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLACK);
+			//tft.fillRect(snake[snakeLength+1].x, snake[snakeLength+1].y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLACK);
+			//tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLUE);
+			//delay(400); // take out later
+			// Serial.print("APPLE LOCATION: ");
+			// Serial.print(appleLocation.x);
+			// Serial.print(", ");
+			// Serial.println(appleLocation.y);
 			appleLocation = randomizeApple();
 
-			Serial.println(snakeLength);
-
+			//Serial.println(snakeLength);
+			//
 			int avoidx[snakeLength];
 			int avoidy[snakeLength];
 			int i = 1;
@@ -370,14 +382,14 @@ void game() {
 			while (appleLocation.x != avoidx[i] && appleLocation.y != avoidy[i]) {
 					avoidx[i] = snake[i].x;
 					avoidy[i] = snake[i].y;
-					Serial.print(i);
-					Serial.print(": ");
-					Serial.print(avoidx[i]);
-					Serial.print(", ");
-					Serial.println(avoidy[i]);
-				Serial.println("done storing in avoidx/y");
-
-				Serial.println("location not on snake check!");
+					// Serial.print(i);
+					// Serial.print(": ");
+					// Serial.print(avoidx[i]);
+					// Serial.print(", ");
+					// Serial.println(avoidy[i]);
+				// Serial.println("done storing in avoidx/y");
+				//
+				// Serial.println("location not on snake check!");
 				i++;
 				isOk = true;
 			}
@@ -388,26 +400,26 @@ void game() {
 				for (int i = 0; i < snakeLength; i++) {
 					checkx[i] = snake[i].x;
 					checky[i] = snake[i].y;
-					Serial.print(i);
-					Serial.print(": ");
-					Serial.print(checkx[i]);
-					Serial.print(", ");
-					Serial.println(checky[i]);
+					// Serial.print(i);
+					// Serial.print(": ");
+					// Serial.print(checkx[i]);
+					// Serial.print(", ");
+					// Serial.println(checky[i]);
 				}
-				Serial.println("done storing in avoidx/y");
-				Serial.print("YIKES APPLE IS ON: ");
-				Serial.print(appleLocation.x);
-				Serial.print(", ");
-				Serial.print(appleLocation.y);
+				// Serial.println("done storing in avoidx/y");
+				// Serial.print("YIKES APPLE IS ON: ");
+				// Serial.print(appleLocation.x);
+				// Serial.print(", ");
+				// Serial.print(appleLocation.y);
 				appleLocation = randomizeApple();
-				Serial.print("new random: ");
-				Serial.print(appleLocation.x);
-				Serial.print(", ");
-				Serial.println(appleLocation.y);
-				tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, MAGENTA); // new apple
+				// Serial.print("new random: ");
+				// Serial.print(appleLocation.x);
+				// Serial.print(", ");
+				// Serial.println(appleLocation.y);
+				tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_MAGENTA); // new apple
 				//delay(1000000000);
 			}
-			Serial.println(isOk);
+			//Serial.println(isOk);
 
 
 			// for(int i=0; i<snakeLength; i++){
@@ -443,7 +455,7 @@ void game() {
 
 			tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
 			snakeLength += 2;
-			tft.fillRect(snake[snakeLength].x, snake[snakeLength].y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLACK);
+			//tft.fillRect(snake[snakeLength].x, snake[snakeLength].y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLACK);
 			// int oldCoord[snakeLength][snakeLength]
 			// for i = 0; i < snakeLength; i++
 			// 	for j = 0; j < snakeLength; j++
@@ -452,7 +464,7 @@ void game() {
 			score++;
 			//speed -= 25;
 			tft.fillRect(40, 228, 20, 10, ILI9341_BLACK);
-			tft.setCursor(45, 228);
+			tft.setCursor(45, 228+1);
 			tft.print(score);
 
 
@@ -469,12 +481,6 @@ int* snakeTail(int tempX[], int tempY[], int snakeLength) {
     tft.fillRect(snake[i].x, snake[i].y, 5, 5, 0xFFFF);
   }
   //return tempX, tempY;
-}
-
-int* eraseTail(int snakeLength, snakeStruct snake[]) {
-	delete[] snake;
-	snakeLength = 5;
-	initSnake(snakeLength);
 }
 
 int processSnake(int snakeLength, int speed) {
@@ -630,17 +636,17 @@ delay(speed);
 	/*****************************************************/
 
 	// ************ GAME OVER CONDITIONS *************** //
-	if (snake[0].y > DISP_HEIGHT - CURSOR_SIZE/2 || snake[0].y < 0) {
-		eraseTail(snakeLength, snake);
+	if (snake[0].y > DISP_HEIGHT +2 || snake[0].y < 0) {
+		//eraseTail(snakeLength, snake);
 		gameOver();
 	}
 	if (snake[0].x > DISP_WIDTH - CURSOR_SIZE/2 || snake[0].x < CURSOR_SIZE) {
-		eraseTail(snakeLength, snake);
+		//eraseTail(snakeLength, snake);
 		gameOver();
 	}
 	for (int i = 1; i < snakeLength; i++) {
 		if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
-			eraseTail(snakeLength, snake);
+			//eraseTail(snakeLength, snake);
 			gameOver();
 		}
 	}
