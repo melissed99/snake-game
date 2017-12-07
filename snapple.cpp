@@ -352,25 +352,38 @@ void game() {
 					tft.setCursor(45, 228);
 					tft.print(score);
 
+
 					//return;
 				}
 		}
 
-
 		//eat apple
+		//bool isOk = true;
 		if (appleLocation.x == snake[0].x && appleLocation.y == snake[0].y){
 			tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_WHITE);
 			appleLocation = randomizeApple();
+			//
+			// if (appleLocation.x == snake[i].x && appleLocation.y == snake[i].y) {
+			// 	appleLocation = randomizeApple();
+			// 	if (appleLocation.x != snake[i].x && appleLocation.y != snake[i].y) {
+			// 		isOk == false;
+			//
+			// 	}
+			// 	while(isOk == true){
+			// 		appleLocation = randomizeApple();
+			//
+			// 	}
+			// }
+
+
+
+
 
 			for(int i=0; i<snakeLength; i++){
 
 				//to avoid placing an apple on top of the snake's body
 				if (appleLocation.x == snake[i].x && appleLocation.y == snake[i].y) {
-
-					uint32_t randomnumappX=randomNum();
-					uint32_t randomnumappY=randomNum();
-					appleLocation.x = randomnumappX % DISP_WIDTH;
-					appleLocation.y = randomnumappY % DISP_HEIGHT;
+					appleLocation = randomizeApple();
 				}
 			}
 
