@@ -56,7 +56,7 @@
 // forward declaration for drawing the cursor
 void startPage();
 void game();
-void processSnake(int snakeLength, int speed);
+int processSnake(int snakeLength, int speed);
 
 // Use hardware SPI (on Mega2560, #52, #51, and #50) and the above for CS/DC
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
@@ -122,16 +122,17 @@ void checkTouchGameOver() {
 int score = 0;
 
 void gameOver() {
-	tft.fillScreen(0x07E0);
+	tft.fillScreen(ILI9341_BLACK);
 
 	tft.setCursor(30, 20);
 	tft.setTextColor(ILI9341_RED);
 	tft.setTextSize(5);
 	tft.print("GAME OVER");
 
-	tft.fillRect(DISP_WIDTH/2 - 95, 100, 190, 60, ILI9341_BLACK);
-	tft.drawRect(DISP_WIDTH/2 - 95, 100, 190, 60, ILI9341_BLACK);
-	tft.setCursor(DISP_WIDTH/2 - 85, 110 );
+	tft.drawRect(DISP_WIDTH/2 - 96, 100, 190+2, 60, ILI9341_GREEN);
+	tft.drawRect(DISP_WIDTH/2 - 96+2, 100+2, 190-2, 60-4, ILI9341_GREEN);
+	//tft.drawRect(DISP_WIDTH/2 - 95, 100, 190, 60, ILI9341_BLACK);
+	tft.setCursor(DISP_WIDTH/2 - 85, 110);
 	tft.setTextColor(ILI9341_WHITE);
 	tft.setTextSize(6);
 	tft.print("RESET");
@@ -152,7 +153,8 @@ void gameOver() {
 }
 
 void startPage() {
-	tft.fillScreen(0x8811);
+	tft.fillScreen(ILI9341_BLACK);
+	//uint16_t purple = 0x8811;
 
 	tft.setCursor(DISP_WIDTH/2 - 45, 30);
 	tft.setTextColor (ILI9341_WHITE);
@@ -162,18 +164,21 @@ void startPage() {
 	tft.setTextSize(2);
 	tft.setCursor(DISP_WIDTH/2 - 120, 55);
 	tft.println("Select a difficulty");
-
-	tft.fillRect(5, 90, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
+	tft.drawRect(5, 90, (DISP_WIDTH/2)-10, 60 , ILI9341_MAGENTA);
+	tft.drawRect(7, 92, (DISP_WIDTH/2)-14, 56 , ILI9341_MAGENTA);
 	tft.setCursor(35,105);
 	tft.setTextSize(4);
 	tft.print("EASY");
-	tft.fillRect(5, 160, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
+	tft.drawRect(5, 160, (DISP_WIDTH/2)-10, 60 , ILI9341_MAGENTA);
+	tft.drawRect(7, 162, (DISP_WIDTH/2)-14, 56 , ILI9341_MAGENTA);
 	tft.setCursor(35, 175);
 	tft.print("HARD");
-	tft.fillRect((DISP_WIDTH/2)+3, 90, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
+	tft.drawRect((DISP_WIDTH/2)+3, 90, (DISP_WIDTH/2)-10, 60 ,ILI9341_MAGENTA);
+	tft.drawRect((DISP_WIDTH/2)+5, 92, (DISP_WIDTH/2)-14, 56 , ILI9341_MAGENTA);
 	tft.setCursor(167, 105);
 	tft.print("MEDIUM");
-	tft.fillRect((DISP_WIDTH/2)+3, 160, (DISP_WIDTH/2)-10, 60 , ILI9341_BLACK);
+	tft.drawRect((DISP_WIDTH/2)+3, 160, (DISP_WIDTH/2)-10, 60 , ILI9341_MAGENTA);
+	tft.drawRect((DISP_WIDTH/2)+5, 162, (DISP_WIDTH/2)-14, 56 , ILI9341_MAGENTA);
 	tft.setCursor(180, 175);
 	tft.print("SONIC");
 
@@ -184,10 +189,6 @@ void startPage() {
 
 void setup() {
 	init();
-
-  // constrain so the cursor does not go off of the map display window
-  //snake[0].x = constrain(cursorX, 0, DISP_WIDTH - CURSOR_SIZE);
-  //snake[0].y = constrain(snake[0].y, 0, DISP_HEIGHT - CURSOR_SIZE);
 
 	pinMode(JOY_SEL, INPUT_PULLUP);
 
@@ -267,8 +268,6 @@ coordinates randomizeApple() {
 
 
 void initSnake(int snakeLength) {
-  // snake[0].x = DISP_WIDTH/2;
-  // snake[0].y = DISP_HEIGHT/2;
   snake[0].move = 'u';
 	for (int i = 0; i < snakeLength; i++) {
 		snake[i].x = DISP_WIDTH/2;
@@ -295,11 +294,11 @@ void game() {
   tft.fillScreen(ILI9341_BLACK);
 
 	tft.setTextSize(1);
-	tft.setCursor(5, 228);
+	tft.setCursor(5, 228+1);
 	tft.print("SCORE: ");
-	tft.setCursor(45, 228);
+	tft.setCursor(45, 228+1);
 	tft.print(score);
-	tft.drawLine(0, DISP_HEIGHT+5, DISP_WIDTH, DISP_HEIGHT+5, ILI9341_WHITE);
+	tft.drawRect(0, DISP_HEIGHT+5, DISP_WIDTH, 15, ILI9341_WHITE);
 
 	int snakeLength = 5;
 	initSnake(snakeLength);
@@ -307,26 +306,42 @@ void game() {
 	int speed = 0;
 	if (counter == 0) {
 		speed=300;
+		tft.setCursor(260, 229);
+		tft.print("EASY MODE");
 	}
 	if (counter == 1) {
 		speed=100;
+		tft.setCursor(250, 229);
+		tft.print("MEDIUM MODE");
 	}
 	if (counter == 2) {
 		speed=50;
+		tft.setCursor(260, 229);
+		tft.print("HARD MODE");
 	}
 	if (counter == 3) {
 		speed=10;
+		tft.setTextColor(ILI9341_BLUE);
+		tft.setCursor(120, 229);
+		tft.print("GOTTA GO FAST");
+		tft.setTextColor(ILI9341_WHITE);
+		tft.setCursor(255, 229);
+		tft.print("SONIC MODE");
 	}
 
 	//randomize apple position
 	coordinates appleLocation = randomizeApple();
 	coordinates prizeApple = randomizeApple();
 	tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
-
+	int eraseTailX = 500;
+	int eraseTailY = 500;
+	int tail;
   delay(20);
 
   while (true) {
-    processSnake(snakeLength, speed);
+    tail = processSnake(snakeLength, speed);
+		snake[tail].x = eraseTailX;
+		snake[tail].y = eraseTailY;
 
 		if(score % 5 ==0 && score!= 0){
 			specialOn = true;
@@ -416,7 +431,7 @@ void game() {
 
 //EAT APPLE
 		if (appleLocation.x == snake[0].x && appleLocation.y == snake[0].y){
-			tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_WHITE);
+			//tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_WHITE);
 			appleLocation = randomizeApple();
 			//
 			// if (appleLocation.x == snake[i].x && appleLocation.y == snake[i].y) {
@@ -448,7 +463,7 @@ void game() {
 			score++;
 
 			tft.fillRect(40, 228, 20, 10, ILI9341_BLACK);
-			tft.setCursor(45, 228);
+			tft.setCursor(45, 228+1);
 			tft.print(score);
 		}
 
@@ -465,7 +480,7 @@ int* snakeTail(int tempX[], int tempY[], int snakeLength) {
   return tempX, tempY;
 }
 
-void processSnake(int snakeLength, int speed) {
+int processSnake(int snakeLength, int speed) {
   int xVal = analogRead(JOY_HORIZ);
   int yVal = analogRead(JOY_VERT);
   // copy the joystick orientation(?)
@@ -474,15 +489,6 @@ void processSnake(int snakeLength, int speed) {
 
 	/**** PROCESS SNAKE MOVEMENT AND DRAWING/REDRAWING ****/
 	int tempX[snakeLength], tempY[snakeLength];
-
-	// *** restrain diagonal movement
-  //doesn't actually do anything but not sure
-	if (yVal != oldY) {
-			xVal = oldX;
-	}
-	else if (xVal != oldX) {
-		yVal = oldY;
-	}
 
   // ***** SNAKE MOVE UP
   if (snake[0].move == 'u') {
@@ -499,13 +505,23 @@ void processSnake(int snakeLength, int speed) {
     tft.fillRect(tempX[(snakeLength) - 1], tempY[(snakeLength) - 1], 5, 5, 0x0000);
 
     // if joystick tilted horizontally, change movement according to direction
-    if ((xVal < JOY_CENTER - JOY_DEADZONE) && yVal == oldY) {
-      snakeTail(tempX, tempY, snakeLength);
-      snake[0].move = 'r';
+		if (xVal < JOY_CENTER - JOY_DEADZONE) {
+			if (yVal < JOY_CENTER - JOY_DEADZONE || yVal > JOY_CENTER + JOY_DEADZONE) {
+				snake[0].move = 'u';
+			}
+      else {
+				snakeTail(tempX, tempY, snakeLength);
+      	snake[0].move = 'r';
+			}
     }
-    else if ((xVal > JOY_CENTER + JOY_DEADZONE) && yVal == oldY) {
-      snakeTail(tempX, tempY, snakeLength);
-      snake[0].move = 'l';
+    else if (xVal > JOY_CENTER + JOY_DEADZONE) {
+			if (yVal < JOY_CENTER - JOY_DEADZONE || yVal > JOY_CENTER + JOY_DEADZONE) {
+				snake[0].move = 'u';
+			}
+      else {
+				snakeTail(tempX, tempY, snakeLength);
+      	snake[0].move = 'l';
+			}
       //tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
     }
   delay(speed);
@@ -524,15 +540,25 @@ void processSnake(int snakeLength, int speed) {
     tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
 
     // if joystick tilted horizontally, change movement according to direction
-    if ((xVal < JOY_CENTER - JOY_DEADZONE) && yVal == oldY) {
-      snakeTail(tempX, tempY, snakeLength);
-      snake[0].move = 'r';
-    }
-    else if ((xVal > JOY_CENTER + JOY_DEADZONE) && yVal == oldY) {
-      snakeTail(tempX, tempY, snakeLength);
-      snake[0].move = 'l';
-      tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
-    }
+		if ((xVal < JOY_CENTER - JOY_DEADZONE) && yVal == oldY) {
+			if (yVal < JOY_CENTER - JOY_DEADZONE || yVal > JOY_CENTER + JOY_DEADZONE) {
+				snake[0].move = 'd';
+			}
+			else {
+				snakeTail(tempX, tempY, snakeLength);
+				snake[0].move = 'r';
+			}
+		}
+		else if ((xVal > JOY_CENTER + JOY_DEADZONE) && yVal == oldY) {
+			if (yVal < JOY_CENTER - JOY_DEADZONE || yVal > JOY_CENTER + JOY_DEADZONE) {
+				snake[0].move = 'd';
+			}
+			else {
+				snakeTail(tempX, tempY, snakeLength);
+				snake[0].move = 'l';
+				//tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
+			}
+		}
   delay(speed);
 }
 
@@ -549,14 +575,23 @@ if (snake[0].move == 'l') {
   tft.fillRect(tempX[(snakeLength)-1], tempY[snakeLength-1], 5, 5, 0x0000);
 
   // if joystick tilted vertically, change movement according to direction
-  if ((yVal < JOY_CENTER - JOY_DEADZONE) && xVal == oldX) {
-    snakeTail(tempX, tempY, snakeLength);
-    snake[0].move = 'u';
-  }
+	if ((yVal < JOY_CENTER - JOY_DEADZONE) && xVal == oldX) {
+		if (xVal < JOY_CENTER - JOY_DEADZONE || xVal > JOY_CENTER + JOY_DEADZONE) {
+			snake[0].move = 'l';
+		}
+		else {
+    	snakeTail(tempX, tempY, snakeLength);
+    	snake[0].move = 'u';
+		}
+	}
   else if ((yVal > JOY_CENTER + JOY_DEADZONE) && xVal == oldX) {
-    snakeTail(tempX, tempY, snakeLength);
-    snake[0].move = 'd';
-    //tft.fillRect(tempX[(snakeLength)-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
+		if (xVal < JOY_CENTER - JOY_DEADZONE || xVal > JOY_CENTER + JOY_DEADZONE) {
+			snake[0].move = 'l';
+		}
+		else {
+    	snakeTail(tempX, tempY, snakeLength);
+    	snake[0].move = 'd';
+		}
   }
 delay(speed);
   }
@@ -574,15 +609,24 @@ delay(speed);
     tft.fillRect(tempX[snakeLength-1], tempY[(snakeLength)-1], 5, 5, 0x0000);
 
     // if joystick tilted vertically, change movement according to direction
-    if ((yVal < JOY_CENTER - JOY_DEADZONE) && xVal == oldX) {
-      snakeTail(tempX, tempY, snakeLength);
-      snake[0].move = 'u';
-    }
-    else if ((yVal > JOY_CENTER + JOY_DEADZONE) && xVal == oldX) {
-      snakeTail(tempX, tempY, snakeLength);
-      snake[0].move = 'd';
-      //tft.fillRect(tempX[(snakeLength)], tempY[(snakeLength)-1], 5, 5, 0x0000);
-    }
+		if ((yVal < JOY_CENTER - JOY_DEADZONE) && xVal == oldX) {
+			if (xVal < JOY_CENTER - JOY_DEADZONE || xVal > JOY_CENTER + JOY_DEADZONE) {
+				snake[0].move = 'r';
+			}
+			else {
+	    	snakeTail(tempX, tempY, snakeLength);
+	    	snake[0].move = 'u';
+			}
+		}
+	  else if ((yVal > JOY_CENTER + JOY_DEADZONE) && xVal == oldX) {
+			if (xVal < JOY_CENTER - JOY_DEADZONE || xVal > JOY_CENTER + JOY_DEADZONE) {
+				snake[0].move = 'r';
+			}
+			else {
+	    	snakeTail(tempX, tempY, snakeLength);
+	    	snake[0].move = 'd';
+			}
+	  }
   delay(speed);
 }
 
@@ -600,7 +644,7 @@ delay(speed);
 			gameOver();
 		}
 	}
-
+	return snakeLength;
 }
 
 
