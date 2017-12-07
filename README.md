@@ -37,9 +37,9 @@ SUBMIT CODE BY DEC 7/8
 - Make README
 
 TO DO:
-[] implement deque for snake movement
-[] fix bug where apple could potentially be drawn underneath snake
-[x] fix bug where apple just sometimes does not draw at all?
-[x] flashing bug fixed (but not really)
-[] clean code / delete extra code, change variable names to make more sense
-[] add comments, make README
+- [] implement deque for snake movement
+- [] fix bug where apple could potentially be drawn underneath snake
+- [x] fix bug where apple just sometimes does not draw at all?
+- [x] flashing bug fixed (but not really)
+- [] clean code / delete extra code, change variable names to make more sense
+- [] add comments, make README

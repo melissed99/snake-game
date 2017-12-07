@@ -194,10 +194,6 @@ void startPage() {
 void setup() {
 	init();
 
-  // constrain so the cursor does not go off of the map display window
-  //cursorX = constrain(cursorX, 0, DISP_WIDTH - CURSOR_SIZE);
-  //cursorY = constrain(cursorY, 0, DISP_HEIGHT - CURSOR_SIZE);
-
 	pinMode(JOY_SEL, INPUT_PULLUP);
 
 	Serial.begin(9600);
@@ -300,9 +296,6 @@ void game() {
 	tft.print("SCORE: ");
 	tft.setCursor(45, 228+1);
 	tft.print(score);
-	//tft.drawRect(0,TFT_HEIGHT+5, DISP_WIDTH, TFT_HEIGHT+6, ILI9341_WHITE);
-	//tft.drawLine(0, TFT_HEIGHT+5, DISP_WIDTH, TFT_HEIGHT+5, ILI9341_WHITE);
-	//tft.drawLine(0, TFT_HEIGHT+19, DISP_WIDTH, TFT_HEIGHT+19, ILI9341_WHITE);
 	tft.drawRect(0,TFT_HEIGHT+5, DISP_WIDTH, 15, ILI9341_YELLOW);
 
 	int snakeLength = 5;
