@@ -276,6 +276,21 @@ void initSnake(int snakeLength) {
 	}
 }
 
+bool appleOn = false;
+bool specialOn = false;
+bool allowSpecial = false;
+int specialTime=0;
+
+// void specialTimer(){
+// 	specialTime++;
+//   if (specialTime > 150){
+//     tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLUE);
+//     specialOn = false;
+//     allowSpecial == false;
+//     specialTime = 0;
+//   }
+// }
+
 void game() {
   tft.fillScreen(ILI9341_BLACK);
 
@@ -303,9 +318,6 @@ void game() {
 		speed=10;
 	}
 
-	// snake[0].x = constrain(snake[0].x, 0, DISP_WIDTH - CURSOR_SIZE);
-	// snake[0].y = constrain(snake[0].y, 0, DISP_HEIGHT - CURSOR_SIZE);
-
 	//randomize apple position
 	coordinates appleLocation = randomizeApple();
 	coordinates prizeApple = randomizeApple();
@@ -316,32 +328,23 @@ void game() {
   while (true) {
     processSnake(snakeLength, speed);
 
-		// Serial.print("appleLocation.x: ");
-		// Serial.print(appleLocation.x);
-		// Serial.print("snakehead.x: " );
-		// Serial.print(snake[0].x);
-		// Serial.print(" ");
-		//
-		// Serial.print("appleLocation.y: ");
-		// Serial.print(appleLocation.y);
-		// Serial.print("snakehead.y: " );
-		// Serial.println(snake[0].y);
-		// Serial.print(score);
-
-		// Serial.print("appleLocation.x: ");
-		// Serial.print(prizeApple.x);
-		// Serial.print("snakehead.x: " );
-		// Serial.print(snake[0].x);
-		// Serial.print(" ");
-		//
-		// Serial.print("appleLocation.y: ");
-		// Serial.print(prizeApple.y);
-		// Serial.print("snakehead.y: " );
-		// Serial.println(snake[0].y);
-		// //Serial.print(score);
-
 		if(score % 5 ==0 && score!= 0){
+			specialOn = true;
 			tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLUE);
+			if(specialOn=true){
+			if (prizeApple.x != snake[0].x && prizeApple.y != snake[0].y){
+			 		specialTime++;
+					Serial.print(specialTime);
+				}
+			}
+				while(specialTime>=100){
+					tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLACK);
+					prizeApple = randomizeApple();
+					specialTime=0;
+					specialOn=false;
+					break;
+
+				}
 				if (prizeApple.x == snake[0].x && prizeApple.y == snake[0].y){
 
 					prizeApple = randomizeApple();
@@ -352,13 +355,66 @@ void game() {
 					tft.setCursor(45, 228);
 					tft.print(score);
 
-
 					//return;
 				}
 		}
 
-		//eat apple
-		//bool isOk = true;
+		// if(score % 5 ==0 && score!= 0){
+		// 	tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLUE);
+		// 	if (prizeApple.x != snake[0].x && prizeApple.y != snake[0].y){
+		// 		specialTime++;
+		// 		if (prizeApple.x == snake[0].x && prizeApple.y == snake[0].y){
+		//
+		// 			//prizeApple = randomizeApple();
+		// 			snakeLength += 2;
+		// 			score += 3;
+		//
+		// 			tft.fillRect(40, 228, 20, 10, ILI9341_BLACK);
+		// 			tft.setCursor(45, 228);
+		// 			tft.print(score);
+		// 			//return;
+		// 		}
+		// 		Serial.print(specialTime);
+		// 		if (specialTime = 100){
+		// 		 tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLACK);
+		// 		 specialTime = 0;
+		// 		 prizeApple = randomizeApple();
+		// 		 tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLACK);
+		// 		 //break;
+		// 	 }
+		// 	 //Serial.print(specialTime);
+		// 	}
+		// }
+
+		// if(score % 5 == 0 && score!= 0){
+		// 	specialOn = true;
+		//
+		// 	tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLUE);
+		// 	if(specialOn=true){
+		// 	if (prizeApple.x != snake[0].x && prizeApple.y != snake[0].y){
+		// 		specialTime++;
+		// 		Serial.print(specialTime);
+		// 	  if (specialTime = 100){
+		// 	    tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLACK);
+		// 	    specialTime = 0;
+		// 			prizeApple = randomizeApple();
+		// 			//break;
+		// 	  }
+		// 	}
+		// 	if (prizeApple.x == snake[0].x && prizeApple.y == snake[0].y){
+		// 		prizeApple = randomizeApple();
+		// 		snakeLength += 2;
+		// 		score += 3;
+		//
+		// 		tft.fillRect(40, 228, 20, 10, ILI9341_BLACK);
+		// 		tft.setCursor(45, 228);
+		// 		tft.print(score);
+		// 		//return;
+		// 	}
+		// 	}
+		// }
+
+//EAT APPLE
 		if (appleLocation.x == snake[0].x && appleLocation.y == snake[0].y){
 			tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_WHITE);
 			appleLocation = randomizeApple();
@@ -374,11 +430,6 @@ void game() {
 			//
 			// 	}
 			// }
-
-
-
-
-
 			for(int i=0; i<snakeLength; i++){
 
 				//to avoid placing an apple on top of the snake's body
@@ -386,23 +437,6 @@ void game() {
 					appleLocation = randomizeApple();
 				}
 			}
-
-
-			// for(int i=0; i<snakeLength; i++){
-			// 	//to avoid placing an apple on top of the snake's body
-			//
-			// 	coordinates randomapple = randomizeApple();
-			// 	if (apple.x == snake[i].x && apple.y == snake[i].y) {
-			// 		appleLocation.x = randomapple % DISP_WIDTH;
-			// 		appleLocation.y = randomapple % DISP_HEIGHT;
-			// 	}
-			// }
-
-				// //to avoid placing an apple on top of the snake's body
-				// 	if (appleLocation.x == snake[].x || appleLocation.y == snake[].y) {
-				// 		appleLocation = randomizeApple();
-				// 	}
-
 
 			tft.fillRect(appleLocation.x, appleLocation.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_RED);
 			snakeLength += 2;
@@ -413,23 +447,9 @@ void game() {
 			//		oldCoord[j] = snake[j].y;
 			score++;
 
-			// if(score % 5 ==0 && score!= 0){
-			// 	tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLUE);
-			// 		if (prizeApple.x == snake[0].x && prizeApple.y == snake[0].y){
-			//
-			// 			prizeApple = randomizeApple();
-			// 			snakeLength += 2;
-			// 			score += 3;
-			//
-			// 			//return;
-			// 		}
-			// }
-
 			tft.fillRect(40, 228, 20, 10, ILI9341_BLACK);
 			tft.setCursor(45, 228);
 			tft.print(score);
-
-
 		}
 
 
