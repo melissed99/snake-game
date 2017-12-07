@@ -345,7 +345,7 @@ void game() {
 
 		if(score % 5 ==0 && score!= 0){
 			specialOn = true;
-			tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_BLUE);
+			tft.fillRect(prizeApple.x, prizeApple.y, CURSOR_SIZE, CURSOR_SIZE, ILI9341_YELLOW);
 			if(specialOn=true){
 			if (prizeApple.x != snake[0].x && prizeApple.y != snake[0].y){
 			 		specialTime++;
