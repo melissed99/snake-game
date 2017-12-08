@@ -56,25 +56,25 @@ print a black square onto the apple and the apple can no longer be seen. This is
 
 
 Milestone 1: ✔️ COMPLETED NOV 28
-- Draw and move around snake (prevent diagonal movement?) ✔️
-- Draw an apple. ✔️
-- Draw startup and game-over screens. ✔️
+- [x] Draw and move around snake (prevent diagonal movement?)
+- [x] Draw an apple.
+- [x] Draw startup and game-over screens.
 
 Milestone 2: ✔️ COMPLETED NOV 29
-- Randomize location of apple each time eaten. ✔️
-- When snake eats apple, make snake longer. ✔️
+- [x] Randomize location of apple each time eaten.
+- [x] When snake eats apple, make snake longer.
 
 Milestone 3: ✔️ COMPLETED DEC 1
-- Endgame conditions if snake hits corner/edge of screen. ✔️
-- Endgame conditions if snake hits itself. ✔️
-- Draw and record score with new boundaries. ✔️
-- Implement different levels of difficulty (i.e. varying snake speed)✔️
+- [x] Endgame conditions if snake hits corner/edge of screen.
+- [x] Endgame conditions if snake hits itself.
+- [x] Draw and record score with new boundaries.
+- [x] Implement different levels of difficulty (i.e. varying snake speed)
 
 Milestone 4: SORT OF COMPLETED DEC 6 ✔️
-- Draw special apple that appears on screen for only a few seconds ✔️
-- Fix flashing snaketail issue/bug ✔️
-- Fix apple drawing over body issue/bug
-- Make screen graphics look nicer? idk maybe
+- [x] Draw special apple that appears on screen for only a few seconds
+- [x] Fix flashing snaketail issue/bug
+- [ ] Fix apple drawing over body issue/bug
+- [x] Make screen graphics look nicer? idk maybe
 
 Bonus Milestone:
 - Implement Deque for Snake Movement
@@ -85,9 +85,9 @@ SUBMIT CODE BY DEC 7/8
 - Make README
 
 TO DO:
-- [] implement deque for snake movement
-- [] fix bug where apple could potentially be drawn underneath snake
+- [ ] implement deque for snake movement
+- [ ] fix bug where apple could potentially be drawn underneath snake
 - [x] fix bug where apple just sometimes does not draw at all?
 - [x] flashing bug fixed (but not really)
-- [] clean code / delete extra code, change variable names to make more sense
-- [] add comments, make README
+- [ ] clean code / delete extra code, change variable names to make more sense
+- [ ] add comments, make README
