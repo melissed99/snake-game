@@ -7,6 +7,11 @@ Team Members: Raymond Sarinas (1476504), Melisse Doroteo (1499913)
 The Arduino and the display will be wired the exact same as how we did it
 for Assignment 2.
 
+Sources/References:
+- Used our assignment 2 part 1 solution as base code to develop this game.
+- Other documents such as that for the touchscreen testing, and (WHATEVER ELSE?)
+  were also used as reference to develop this game.
+
 Accessories:
 1 x Arduino Mega Board (AMG)
 1 x Joystick
