@@ -4,8 +4,8 @@
 #include <SD.h>
 #include <TouchScreen.h>
 
-#include <stdio.h>      /* printf, NULL */
-#include <stdlib.h>     /* srand, rand */
+#include <stdio.h>
+#include <stdlib.h>     /* to use rand */
 
 // TFT display and SD card will share the hardware SPI interface.
 // For the Adafruit shield, these are the default.
@@ -86,6 +86,7 @@ snakeStruct snake[100];
 // FUNCTIONS FOR START PAGE & GAME OVER TOUCHSCREEN PAGES
 // ======================================================
 
+//function that checks which difficulty the player selected
 void checkTouchStartPage() {
 	TSPoint p = ts.getPoint();
 
@@ -124,6 +125,7 @@ void checkTouchStartPage() {
 	}
 }
 
+// function that checks if the player touches the reset button to restart the game
 void checkTouchGameOver() {
 	TSPoint p = ts.getPoint();
 
@@ -140,6 +142,7 @@ void checkTouchGameOver() {
 	}
 }
 
+//displays the start page and the difficulty selection
 void startPage() {
 	tft.fillScreen(ILI9341_BLACK);
 
@@ -178,6 +181,7 @@ void startPage() {
 	}
 }
 
+//displays the game over screen along with the final score of the player and a reset button is the player wants to play again
 void gameOver() {
 	tft.fillScreen(ILI9341_BLACK);
 
@@ -248,8 +252,8 @@ void game() {
 		if (appleLocation.x == snake[0].x && appleLocation.y == snake[0].y){
 			appleLocation = randomizeApple();
 
+      //to avoid placing an apple on top of the snake's body
 			for(int i = 0; i < snakeLength; i++){
-				//to avoid placing an apple on top of the snake's body
 				if (appleLocation.x == snake[i].x && appleLocation.y == snake[i].y) {
 					appleLocation = randomizeApple();
 				}
@@ -313,13 +317,16 @@ int displaySpeedScore() {
 // APPLE DRAWING HELPER FUNCTIONS
 // ===============================
 
-// TODO comments here pls also make sure to talk about recursion :~)
+/* function that generates a random number using rand(), a library was added so that this could be used
+the randomKey generated was mod by 5 since the cursor size of the snake and the movement increases by 5.With this the
+apple was aligned with the snakes Movement. If the the randomKey % 5 did not equal 0 then the randomNum function
+was recursively until a randomKey was found that was divisible by 5 */
+
 uint32_t randomNum() {
 	int randomKey = 0;
-	srand(millis());
+	//srand(millis());
  	randomKey = rand();
-
-	if (randomKey %5 == 0) {
+	if (randomKey % 5 == 0) {
 		return randomKey;
 	}
 	else {
