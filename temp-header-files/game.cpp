@@ -158,10 +158,6 @@ int main() {
 	setup();
 	startPage();
 
-	while (true) {
-		game();
-  }
-
 	Serial.end();
 	return 0;
 }
