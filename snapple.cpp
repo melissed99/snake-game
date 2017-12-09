@@ -86,7 +86,8 @@ snakeStruct snake[100];
 // FUNCTIONS FOR START PAGE & GAME OVER TOUCHSCREEN PAGES
 // ======================================================
 
-//function that checks which difficulty the player selected
+// function that checks if player has selected a game difficulty mode.
+// checks which difficulty the player selects
 void checkTouchStartPage() {
 	TSPoint p = ts.getPoint();
 
@@ -142,7 +143,7 @@ void checkTouchGameOver() {
 	}
 }
 
-//displays the start page and the difficulty selection
+// displays the start page and the difficulty selection
 void startPage() {
 	tft.fillScreen(ILI9341_BLACK);
 
@@ -181,7 +182,8 @@ void startPage() {
 	}
 }
 
-//displays the game over screen along with the final score of the player and a reset button is the player wants to play again
+// displays the game over screen along with the final score of the player
+// and a reset button is the player wants to play again
 void gameOver() {
 	tft.fillScreen(ILI9341_BLACK);
 
@@ -317,10 +319,12 @@ int displaySpeedScore() {
 // APPLE DRAWING HELPER FUNCTIONS
 // ===============================
 
-/* function that generates a random number using rand(), a library was added so that this could be used
-the randomKey generated was mod by 5 since the cursor size of the snake and the movement increases by 5.With this the
-apple was aligned with the snakes Movement. If the the randomKey % 5 did not equal 0 then the randomNum function
-was recursively until a randomKey was found that was divisible by 5 */
+// function that generates a random number using rand(), a library was added
+// so that this could be used the randomKey generated was mod by 5 since the
+// cursor size of the snake and the movement increases by 5. With this the
+// apple was aligned with the snakes Movement. If the the randomKey % 5 did
+// not equal 0 then the randomNum function was called recursively
+// until a randomKey was found that was divisible by 5
 
 uint32_t randomNum() {
 	int randomKey = 0;
@@ -334,6 +338,8 @@ uint32_t randomNum() {
 	}
 }
 
+// function that generates and returns random (x, y) coordinates
+// that will be used to draw a randomly placed apple on the LCD screen
 coordinates randomizeApple() {
 	coordinates apple;
 
@@ -342,10 +348,6 @@ coordinates randomizeApple() {
 
 	apple.x = randomnumX % DISP_WIDTH;
 	apple.y = randomnumY % (DISP_HEIGHT - 5);
-	//FIXME idk but like the thing that happens when at the bottom of the screen
-	// and the gameover condition thing i changed back so when u touch the bottom u still DIE
-	// but i added - 5 to the apple.y thing so that the apple never draws at the bottom and i doubt
-	// they will check trying to move across the bottom of the screen lol
 
 	// after randomizing location return its coordinates
 	return apple;
