@@ -18,8 +18,8 @@ the "head" or front end of the snake runs into any other part of its self/trail.
 
 Sources/References:
 - Used our assignment 2 part 1 solution as base code to develop this game.
-- Other documents such as that for the touchscreen testing, and (WHATEVER ELSE?)
-  were also used as reference to develop this game.
+- Other documents such as that for the touchscreen testing, and randomizing numbers
+  were also used as reference to develop this game from Zac's Google Drive.
 
 Accessories:
 1 x Arduino Mega Board (AMG)
@@ -102,7 +102,7 @@ Milestone 4: ✔️ COMPLETED DEC 7
 - [x] Clean and organize code.
 - [x] Add comments to code and complete README.
 
-BONUS MILESTONE:
+BONUS MILESTONE: ❌ INCOMPLETE
 - [x] Draw special apple that appears on screen for only a few seconds.
 - [x] Implement deque to be used for snake movement.
 - [x] Make screen graphics look nicer?
